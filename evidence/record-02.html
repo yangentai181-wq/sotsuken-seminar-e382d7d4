@@ -1,0 +1,270 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>csc_grid_search.py｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>csc_grid_search.py</h1><p class="note">保存済み資料の公開用コピーです。作成時の実験条件・記録として参照し、今回の新しい実験結果とは区別してください。</p><pre>&quot;&quot;&quot;
+計画書E案 §12 批判2 への対応 — CSC 構造重みの train 上グリッドサーチ。
+
+設計:
+- 重み w_k の各記述子内係数は default (0.5/0.5) で固定
+- 各構造 k の「スコア倍率」 scale_k ∈ {0.0, 0.5, 1.0, 1.5, 2.0} を探索
+- 5 構造 × 5 倍率 = 5^5 = 3125 通り → coordinate descent 2 パスで近似
+- 目的関数: train タイル上の **平均 MCR** 最大化（少数クラス保持率）
+- 評価: val + test で MCR / BPR / ESR を報告、漏洩なし
+
+出力:
+- results/csc_grid/best_weights.json
+- results/csc_grid/eval.csv
+- results/csc_grid/summary.md
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import sys
+import time
+from copy import deepcopy
+from pathlib import Path
+
+import numpy as np
+from scipy import stats
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from src.descriptors import compute_descriptors
+from src.csc import DEFAULT_WEIGHTS, retention_priority
+from src.metrics import mcr, bpr, esr
+from src.reductions import csc_voxel, uniform_voxel, _voxel_size_for_ratio
+from src.tiles import split_xy_tiles
+
+
+DATA_DIRS = {
+    &quot;train&quot;: ROOT / &quot;data&quot; / &quot;arch-processed&quot; / &quot;train&quot;,
+    &quot;val&quot;:   ROOT / &quot;data&quot; / &quot;arch-processed&quot; / &quot;val&quot;,
+    &quot;test&quot;:  ROOT / &quot;data&quot; / &quot;arch-processed&quot; / &quot;test&quot;,
+}
+TARGET_RATIO = 0.70
+BOUNDARY_RADIUS = 0.05
+TAU_E = 0.85
+K_NEIGH = 30
+N_PER_AXIS = 3
+TILE_CAP_POINTS = 80_000
+MIN_POINTS_PER_TILE = 5_000
+
+STRUCTURES = list(DEFAULT_WEIGHTS.keys())   # [&#x27;long&#x27;,&#x27;column&#x27;,&#x27;planar_edge&#x27;,&#x27;frame&#x27;,&#x27;curved&#x27;]
+SCALE_GRID = (0.0, 0.5, 1.0, 1.5, 2.0)
+N_PASSES = 2
+
+
+def _load_tiles_with_descriptors(split: str) -&gt; list[dict]:
+    &quot;&quot;&quot;split 内の全シーンを読み込み、タイル分割 + 記述子計算。&quot;&quot;&quot;
+    out: list[dict] = []
+    data_dir = DATA_DIRS[split]
+    if not data_dir.exists():
+        return out
+    rng = np.random.default_rng(0)
+    for scene_path in sorted(data_dir.iterdir()):
+        if scene_path.suffix != &quot;.npy&quot;:
+            continue
+        scene_id = scene_path.stem
+        P = np.load(scene_path)
+        tiles = split_xy_tiles(P, n_per_axis=N_PER_AXIS, min_points=MIN_POINTS_PER_TILE)
+        for t_idx, tile in enumerate(tiles):
+            if len(tile) &gt; TILE_CAP_POINTS:
+                idx = rng.choice(len(tile), size=TILE_CAP_POINTS, replace=False)
+                idx.sort()
+                tile = tile[idx]
+            print(f&quot;  computing descriptors: {split}/{scene_id} tile {t_idx} (n={len(tile)})&quot;,
+                  flush=True)
+            desc = compute_descriptors(tile, k=K_NEIGH)
+            vox = _voxel_size_for_ratio(tile[:, :3].astype(np.float64), TARGET_RATIO)
+            out.append({
+                &quot;split&quot;: split, &quot;scene&quot;: scene_id, &quot;tile_idx&quot;: t_idx,
+                &quot;P&quot;: tile, &quot;desc&quot;: desc, &quot;voxel&quot;: vox,
+                &quot;elong&quot;: desc[&quot;elongation&quot;],
+            })
+    return out
+
+
+def _evaluate_mcr(tiles: list[dict], scales: dict[str, float]) -&gt; float:
+    &quot;&quot;&quot;与えた構造倍率での平均 MCR (NaN を除く) を返す。&quot;&quot;&quot;
+    vals = []
+    for t in tiles:
+        prio = retention_priority(t[&quot;desc&quot;], alpha=0.5,
+                                  structure_scales=scales)
+        P_red = csc_voxel(t[&quot;P&quot;], TARGET_RATIO, priority=prio, voxel_size=t[&quot;voxel&quot;])
+        m = mcr(t[&quot;P&quot;], P_red)
+        if not np.isnan(m):
+            vals.append(m)
+    return float(np.mean(vals)) if vals else float(&quot;nan&quot;)
+
+
+def _coordinate_descent(train_tiles: list[dict]) -&gt; tuple[dict[str, float], list[dict]]:
+    &quot;&quot;&quot;各構造の scale を順に最適化。passes 回繰り返す。&quot;&quot;&quot;
+    scales = {s: 1.0 for s in STRUCTURES}
+    best_mcr = _evaluate_mcr(train_tiles, scales)
+    trace = [{&quot;pass&quot;: 0, &quot;structure&quot;: &quot;init&quot;, &quot;scale&quot;: None,
+              &quot;scales_snapshot&quot;: dict(scales), &quot;train_mcr&quot;: best_mcr}]
+    print(f&quot;\n[grid] init: train MCR = {best_mcr:.4f}&quot;, flush=True)
+
+    for p in range(N_PASSES):
+        for s in STRUCTURES:
+            best_local = scales[s]
+            best_local_mcr = best_mcr
+            for t in SCALE_GRID:
+                trial = dict(scales)
+                trial[s] = t
+                m = _evaluate_mcr(train_tiles, trial)
+                trace.append({&quot;pass&quot;: p + 1, &quot;structure&quot;: s, &quot;scale&quot;: t,
+                              &quot;scales_snapshot&quot;: dict(trial),
+                              &quot;train_mcr&quot;: m})
+                if m &gt; best_local_mcr:
+                    best_local_mcr = m
+                    best_local = t
+            scales[s] = best_local
+            best_mcr = best_local_mcr
+            print(f&quot;[grid] pass {p+1} struct={s}: best scale={best_local} &quot;
+                  f&quot;→ train MCR={best_mcr:.4f}&quot;, flush=True)
+
+    return scales, trace
+
+
+def _evaluate_full(tiles: list[dict], scales: dict[str, float]) -&gt; list[dict]:
+    &quot;&quot;&quot;val/test タイルで MCR / BPR / ESR を計測（uniform と csc 両方）。&quot;&quot;&quot;
+    rows: list[dict] = []
+    rng = np.random.default_rng(0)
+    for t in tiles:
+        P = t[&quot;P&quot;]
+        # uniform
+        P_u = uniform_voxel(P, TARGET_RATIO, voxel_size=t[&quot;voxel&quot;], rng=rng)
+        # csc with optimized scales
+        prio = retention_priority(t[&quot;desc&quot;], alpha=0.5, structure_scales=scales)
+        P_c = csc_voxel(P, TARGET_RATIO, priority=prio, voxel_size=t[&quot;voxel&quot;])
+        for name, P_red in [(&quot;uniform_voxel&quot;, P_u), (&quot;csc_voxel_grid&quot;, P_c)]:
+            rows.append({
+                &quot;split&quot;: t[&quot;split&quot;], &quot;scene&quot;: t[&quot;scene&quot;], &quot;tile_idx&quot;: t[&quot;tile_idx&quot;],
+                &quot;method&quot;: name,
+                &quot;n_original&quot;: len(P), &quot;n_reduced&quot;: len(P_red),
+                &quot;MCR&quot;: mcr(P, P_red),
+                &quot;BPR&quot;: bpr(P, P_red, radius=BOUNDARY_RADIUS),
+                &quot;ESR&quot;: esr(P, P_red, tau_e=TAU_E, k=K_NEIGH, elong_cached=t[&quot;elong&quot;]),
+            })
+    return rows
+
+
+def _paired(rows: list[dict], split: str, metric: str
+            ) -&gt; tuple[np.ndarray, np.ndarray]:
+    keys = sorted({(r[&quot;scene&quot;], r[&quot;tile_idx&quot;]) for r in rows if r[&quot;split&quot;] == split})
+    a, b = [], []
+    for k in keys:
+        u = next((r for r in rows
+                 if r[&quot;split&quot;] == split and (r[&quot;scene&quot;], r[&quot;tile_idx&quot;]) == k
+                 and r[&quot;method&quot;] == &quot;uniform_voxel&quot;), None)
+        c = next((r for r in rows
+                 if r[&quot;split&quot;] == split and (r[&quot;scene&quot;], r[&quot;tile_idx&quot;]) == k
+                 and r[&quot;method&quot;] == &quot;csc_voxel_grid&quot;), None)
+        if not u or not c:
+            continue
+        if np.isnan(u[metric]) or np.isnan(c[metric]):
+            continue
+        a.append(u[metric])
+        b.append(c[metric])
+    return np.array(a), np.array(b)
+
+
+def _wilcoxon_block(rows: list[dict], split: str) -&gt; str:
+    lines = [f&quot;\n#### {split}: csc_voxel_grid vs uniform_voxel (片側 greater)\n&quot;]
+    lines.append(&quot;| 指標 | n | unif mean | csc mean | Δ | p | |\n|---|---:|---:|---:|---:|---:|:--:|\n&quot;)
+    for metric in (&quot;MCR&quot;, &quot;BPR&quot;, &quot;ESR&quot;):
+        a, b = _paired(rows, split, metric)
+        if len(a) &lt; 5:
+            lines.append(f&quot;| {metric} | {len(a)} | — | — | — | (too few) | — |\n&quot;)
+            continue
+        try:
+            res = stats.wilcoxon(b, a, alternative=&quot;greater&quot;, zero_method=&quot;wilcox&quot;)
+            p = float(res.pvalue)
+        except ValueError as e:
+            lines.append(f&quot;| {metric} | {len(a)} | {a.mean():.4f} | {b.mean():.4f} | &quot;
+                         f&quot;{(b-a).mean():+.4f} | err: {e} | — |\n&quot;)
+            continue
+        sig = &quot;✅&quot; if p &lt; 0.05 / 3 else &quot;—&quot;
+        lines.append(
+            f&quot;| {metric} | {len(a)} | {a.mean():.4f} | {b.mean():.4f} | &quot;
+            f&quot;{(b-a).mean():+.4f} | {p:.4g} | {sig} |\n&quot;
+        )
+    return &quot;&quot;.join(lines)
+
+
+def main(quick: bool = False) -&gt; None:
+    if quick:
+        global N_PASSES, SCALE_GRID
+        N_PASSES = 1
+        SCALE_GRID = (0.5, 1.0, 2.0)
+
+    out_dir = ROOT / &quot;results&quot; / &quot;csc_grid&quot;
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    print(&quot;=== Loading train tiles + computing descriptors ===&quot;)
+    t0 = time.time()
+    train_tiles = _load_tiles_with_descriptors(&quot;train&quot;)
+    print(f&quot;loaded {len(train_tiles)} train tiles in {time.time()-t0:.1f}s&quot;)
+
+    print(&quot;\n=== Loading val + test tiles ===&quot;)
+    t0 = time.time()
+    val_tiles = _load_tiles_with_descriptors(&quot;val&quot;)
+    test_tiles = _load_tiles_with_descriptors(&quot;test&quot;)
+    print(f&quot;loaded {len(val_tiles)} val + {len(test_tiles)} test tiles &quot;
+          f&quot;in {time.time()-t0:.1f}s&quot;)
+
+    print(&quot;\n=== Coordinate descent grid search on train ===&quot;)
+    t0 = time.time()
+    best_scales, trace = _coordinate_descent(train_tiles)
+    print(f&quot;\ngrid search done in {time.time()-t0:.1f}s&quot;)
+    print(&quot;best scales:&quot;, best_scales)
+
+    # Save best weights + trace
+    (out_dir / &quot;best_weights.json&quot;).write_text(
+        json.dumps({
+            &quot;structure_scales&quot;: best_scales,
+            &quot;default_weights&quot;: DEFAULT_WEIGHTS,
+            &quot;alpha&quot;: 0.5,
+            &quot;trace_n&quot;: len(trace),
+        }, indent=2, ensure_ascii=False)
+    )
+
+    print(&quot;\n=== Evaluating on val + test ===&quot;)
+    eval_rows = _evaluate_full(val_tiles + test_tiles, best_scales)
+    # Train evaluation for completeness
+    eval_rows += _evaluate_full(train_tiles, best_scales)
+
+    # Write eval.csv
+    field = [&quot;split&quot;, &quot;scene&quot;, &quot;tile_idx&quot;, &quot;method&quot;,
+             &quot;n_original&quot;, &quot;n_reduced&quot;, &quot;MCR&quot;, &quot;BPR&quot;, &quot;ESR&quot;]
+    with open(out_dir / &quot;eval.csv&quot;, &quot;w&quot;, newline=&quot;&quot;) as f:
+        writer = csv.DictWriter(f, fieldnames=field)
+        writer.writeheader()
+        writer.writerows(eval_rows)
+
+    # Write summary.md
+    summary = [&quot;# CSC 重みグリッドサーチ結果\n\n&quot;]
+    summary.append(f&quot;**設定**: coordinate descent {N_PASSES} pass, &quot;
+                   f&quot;scale grid={SCALE_GRID}, train 上で MCR 最大化\n\n&quot;)
+    summary.append(f&quot;**最良 structure scales**:\n```json\n&quot;
+                   f&quot;{json.dumps(best_scales, indent=2)}\n```\n&quot;)
+    for split in (&quot;train&quot;, &quot;val&quot;, &quot;test&quot;):
+        summary.append(_wilcoxon_block(eval_rows, split))
+    (out_dir / &quot;summary.md&quot;).write_text(&quot;&quot;.join(summary))
+
+    print(&quot;\n=== DONE ===&quot;)
+    print(f&quot;best_weights.json: {out_dir / &#x27;best_weights.json&#x27;}&quot;)
+    print(f&quot;eval.csv         : {out_dir / &#x27;eval.csv&#x27;} ({len(eval_rows)} rows)&quot;)
+    print(f&quot;summary.md       : {out_dir / &#x27;summary.md&#x27;}&quot;)
+    print(&quot;\n&quot; + (out_dir / &quot;summary.md&quot;).read_text())
+
+
+if __name__ == &quot;__main__&quot;:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(&quot;--quick&quot;, action=&quot;store_true&quot;,
+                        help=&quot;3 scales × 1 pass で動作確認&quot;)
+    args = parser.parse_args()
+    main(quick=args.quick)
+</pre></main></body></html>

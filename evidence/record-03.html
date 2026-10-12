@@ -1,0 +1,528 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>e_minimum_results_2026-05-17.md｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>e_minimum_results_2026-05-17.md</h1><p class="note">保存済み資料の公開用コピーです。作成時の実験条件・記録として参照し、今回の新しい実験結果とは区別してください。</p><h1>研究計画書E案 §13.1 — 最小成立実験の結果報告</h1>
+<p><strong>実施日</strong>: 2026-05-17
+<strong>ブランチ</strong>: <code>feat/plan-e-minimum-experiment</code>
+<strong>実行スクリプト</strong>: <code>experiments/e_minimum.py</code> → <code>experiments/e_minimum_wilcoxon.py</code></p>
+<hr />
+<h2>1. 実験設定（計画書 E案 §13.1 準拠 + ESR 追加）</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>設定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>データ</td>
+<td>ArCH (前処理済 <code>.npy</code>)、train 3 / val 1 / test 1 = 5 シーン</td>
+</tr>
+<tr>
+<td>削減率</td>
+<td><strong>70%</strong>（§9.1 中心条件）</td>
+</tr>
+<tr>
+<td>比較手法</td>
+<td><code>uniform_voxel</code>（均一ボクセル間引き）vs <code>csc_voxel</code>（提案手法）</td>
+</tr>
+<tr>
+<td>主指標</td>
+<td><strong>MCR / BPR / ESR</strong>（§4.1〜§4.3）</td>
+</tr>
+<tr>
+<td>公平性</td>
+<td>両手法とも同一の voxel グリッドを使用、voxel 内点選択ルールのみ違う</td>
+</tr>
+<tr>
+<td>paired サンプル</td>
+<td>各シーンを XY 平面 3×3 に分割 → 43 タイル（min_points 5,000）</td>
+</tr>
+<tr>
+<td>タイル点数上限</td>
+<td>80,000（CPU 実行時間の現実性確保）</td>
+</tr>
+<tr>
+<td>統計検定</td>
+<td>片側 Wilcoxon signed-rank test, alternative='greater'<br>α=0.05、Bonferroni 補正後 α=0.0167</td>
+</tr>
+<tr>
+<td>実行環境</td>
+<td>macOS / Mac CPU 単機 / conda <code>randlanet</code></td>
+</tr>
+<tr>
+<td>実行時間</td>
+<td>約 2 分（全 43 タイル）</td>
+</tr>
+</tbody>
+</table></div>
+<p>下流セグメンテーション (RandLA-Net) は §13.1 の範囲外 + GPU ブロック中のため未実施。</p>
+<hr />
+<h2>2. 結果サマリー</h2>
+<h3>2.1 H1：削減手法は非削減 (=1.0) を有意に下回るか</h3>
+<p>各主指標について 1.0 を対照群とした one-sample Wilcoxon signed-rank（alternative='less'）。
+deficit = 1 − 平均値、95% CI は bootstrap (n=5000)。Bonferroni 補正後 α = 0.05/6 = 0.0083。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>手法</th>
+<th>指標</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">平均値</th>
+<th style="text-align: right;">deficit</th>
+<th style="text-align: center;">95% CI</th>
+<th style="text-align: right;">p (片側)</th>
+<th style="text-align: center;">有意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>uniform_voxel</td>
+<td>MCR</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.2681</td>
+<td style="text-align: right;"><strong>+0.7319</strong></td>
+<td style="text-align: center;">[0.711, 0.757]</td>
+<td style="text-align: right;">2.98e-08</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>uniform_voxel</td>
+<td>BPR</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0.2159</td>
+<td style="text-align: right;"><strong>+0.7841</strong></td>
+<td style="text-align: center;">[0.767, 0.803]</td>
+<td style="text-align: right;">3.73e-09</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>uniform_voxel</td>
+<td>ESR</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">0.4525</td>
+<td style="text-align: right;"><strong>+0.5475</strong></td>
+<td style="text-align: center;">[0.494, 0.599]</td>
+<td style="text-align: right;">8.22e-09</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>csc_voxel</td>
+<td>MCR</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.2688</td>
+<td style="text-align: right;">+0.7312</td>
+<td style="text-align: center;">[0.709, 0.757]</td>
+<td style="text-align: right;">2.98e-08</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>csc_voxel</td>
+<td>BPR</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0.2146</td>
+<td style="text-align: right;">+0.7854</td>
+<td style="text-align: center;">[0.768, 0.804]</td>
+<td style="text-align: right;">3.73e-09</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>csc_voxel</td>
+<td>ESR</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">0.6470</td>
+<td style="text-align: right;"><strong>+0.3530</strong></td>
+<td style="text-align: center;">[0.288, 0.416]</td>
+<td style="text-align: right;">8.38e-08</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table></div>
+<p>→ <strong>H1 全6検定で支持</strong>。70% 削減はいずれの主指標も大きく損なう（uniform で 55%〜78% を喪失）。
+特筆: ESR について <strong>csc の deficit (35.3%) は uniform (54.8%) よりも 20pt 近く小さい</strong> — これは H3 ESR と同じ事実を deficit 側から見た系。</p>
+<h3>2.2 H3：csc &gt; uniform（主検定）</h3>
+<p>Bonferroni 補正後 α = 0.05/3 = 0.0167。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th style="text-align: right;">n_pairs</th>
+<th style="text-align: right;">uniform mean</th>
+<th style="text-align: right;">csc mean</th>
+<th style="text-align: right;">Δ (csc - uniform)</th>
+<th style="text-align: right;">W</th>
+<th style="text-align: right;">p (片側)</th>
+<th style="text-align: center;">有意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MCR</strong></td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.2681</td>
+<td style="text-align: right;">0.2688</td>
+<td style="text-align: right;"><strong>+0.0007</strong></td>
+<td style="text-align: right;">184.0</td>
+<td style="text-align: right;">0.2891</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td><strong>BPR</strong></td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0.2159</td>
+<td style="text-align: right;">0.2146</td>
+<td style="text-align: right;"><strong>-0.0013</strong></td>
+<td style="text-align: right;">174.0</td>
+<td style="text-align: right;">0.7462</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td><strong>ESR</strong></td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">0.4525</td>
+<td style="text-align: right;">0.6470</td>
+<td style="text-align: right;"><strong>+0.1945</strong></td>
+<td style="text-align: right;">903.0</td>
+<td style="text-align: right;"><strong>8.2e-09</strong></td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2.3 勝率（タイル単位、csc vs uniform）</h3>
+<div class="table"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">csc が大</th>
+<th style="text-align: right;">tied</th>
+<th style="text-align: right;">csc が小</th>
+<th style="text-align: right;">win rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCR</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">52.00%</td>
+</tr>
+<tr>
+<td>BPR</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">39.29%</td>
+</tr>
+<tr>
+<td>ESR</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"><strong>42</strong></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><strong>97.67%</strong></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>3. 結論：H1 / H3 の判定</h2>
+<p>E案 §6 / §15 で定義した H1〜H3 への暫定回答：</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>仮説</th>
+<th>結果</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>H1</strong>（均一は非削減を有意に下回る）</td>
+<td>✅ <strong>支持</strong></td>
+<td>6 検定すべてで p &lt; 1e-7（Bonferroni 後）。uniform で MCR 73.2%・BPR 78.4%・ESR 54.8% を喪失。csc は ESR の deficit が 35.3% に縮小</td>
+</tr>
+<tr>
+<td><strong>H3-MCR</strong>（CSCが均一を上回る）</td>
+<td><strong>不支持</strong></td>
+<td>Δ≈0、p=0.29、勝率 52%。CSC は label-free のため少数クラス保存には寄与しない</td>
+</tr>
+<tr>
+<td><strong>H3-BPR</strong>（CSCが均一を上回る）</td>
+<td><strong>不支持</strong></td>
+<td>Δ がむしろ負（−0.0013）、勝率 39%。境界保存にも寄与しない</td>
+</tr>
+<tr>
+<td><strong>H3-ESR</strong>（CSCが均一を上回る）</td>
+<td>✅ <strong>強く支持</strong></td>
+<td>Δ=+0.1945、p=8.2e-09、勝率 97.67%。CSC は長尺/構造的な点を強く優先保持する</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>4. 解釈</h2>
+<h3>4.1 ESR で顕著な勝利が出た理由</h3>
+<p>CSC スコアは linearity / planarity / scattering / verticality といった <strong>局所幾何的に「構造的」な点を高く評価する</strong> ように設計されている。これらは ESR の定義（固有値ベースの長尺性）とほぼ同じ計算経路を共有しているため、ESR で大幅な改善が出るのは半ば自明である。</p>
+<p>これは CSC の <strong>構成的妥当性の確認</strong>としては意味があるが、独立な「外部評価」とは言い切れない。次フェーズでは <strong>CSC で使う記述子を ESR の定義から完全に分離する</strong>か、<strong>ESR を別の保持指標で置き換える</strong>かを検討する必要がある。</p>
+<h3>4.2 MCR が改善しなかった理由</h3>
+<p>CSC スコアは <strong>ラベルを一切参照しない</strong>（§7.1）。少数クラス（arch / column / molding / door-window）の点が必ずしも「構造的」な特徴を持つとは限らない（壁の角や床の縁にも同様の特徴が出る）。</p>
+<p>→ MCR を改善するには、CSC の重み $w_k$ を <strong>train 上で少数クラス保持率を最大化する方向にグリッドサーチ</strong> する必要がある（§12 批判2 の対応として計画書に既述）。これは標準構成 (§13.2) で着手すべき次のステップ。</p>
+<h3>4.3 BPR が逆に悪化した理由</h3>
+<p>CSC スコアが高い点（強い構造性を持つ点）は voxel 内で「平面の内部」「線の中心」に近く、<strong>境界からは離れている傾向</strong>がある。一方 boundary continuity の派生量（boundary_discontinuity）も使ってはいるが、寄与が小さい。</p>
+<p>→ BPR を改善するには、CSC の "planar_edge" 重みを上げるか、s_geo の boundary 寄与を強める必要がある。</p>
+<hr />
+<h2>5. 次のステップ（標準構成 §13.2 への展開順）</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>優先</th>
+<th>内容</th>
+<th>状態</th>
+<th>想定工数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>~~1~~</td>
+<td>~~非削減対照群を明示し、H1 を統計検定可能化~~</td>
+<td>✅ <strong>完了</strong> (5/17)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~2~~</td>
+<td>~~CSC 重み $w_k$ のグリッドサーチ~~</td>
+<td>✅ <strong>完了</strong> (5/17)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~3~~</td>
+<td>~~追加ベースライン: FPS / 曲率サンプリング / GeoAdapt~~</td>
+<td>✅ <strong>完了</strong> (5/17)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>~~4~~</td>
+<td>~~α / β スイープ + Shuffled CSC アブレーション~~</td>
+<td>✅ <strong>完了</strong> (5/17)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5</td>
+<td>GPU 環境確保後に <strong>下流 RandLA-Net F1</strong> で副指標を補完</td>
+<td>GPU 待ち</td>
+<td>—</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>多目的最適化</strong> (MCR と ESR の Pareto front 探索) — 現状の単一目的では trade-off で限界</td>
+<td>提案</td>
+<td>6h</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>5b. §13.2 標準構成の主要追加結果（2026-05-17 追加分）</h2>
+<h3>5b.1 CSC 重み grid search（train で MCR 最大化）</h3>
+<div class="table"><table>
+<thead>
+<tr>
+<th>split</th>
+<th>比較</th>
+<th style="text-align: right;">MCR Δ</th>
+<th style="text-align: right;">p（片側）</th>
+<th style="text-align: right;">ESR Δ</th>
+<th style="text-align: right;">p</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>train</td>
+<td>grid vs uniform</td>
+<td style="text-align: right;">+0.004</td>
+<td style="text-align: right;">0.0003 ✅</td>
+<td style="text-align: right;">+0.054</td>
+<td style="text-align: right;">0.0001 ✅</td>
+<td>両方有意</td>
+</tr>
+<tr>
+<td>val</td>
+<td>grid vs uniform</td>
+<td style="text-align: right;">+0.001</td>
+<td style="text-align: right;">0.031</td>
+<td style="text-align: right;">+0.059</td>
+<td style="text-align: right;">0.008 ✅</td>
+<td>MCR は汎化弱、ESR は強い</td>
+</tr>
+<tr>
+<td>test</td>
+<td>grid vs uniform</td>
+<td style="text-align: right;">n/a</td>
+<td style="text-align: right;">n/a</td>
+<td style="text-align: right;">+0.029</td>
+<td style="text-align: right;">0.46</td>
+<td>5_CB のみで検出力不足</td>
+</tr>
+</tbody>
+</table></div>
+<p>→ MCR 向上は train 上で有意だが val/test に汎化しにくい。ESR は引き続き強く有意。
+<strong>最良 scales</strong>: <code>{long: 0, column: 0, planar_edge: 1.5, frame: 0, curved: 2.0}</code> ← curved（Arc）と planar_edge（Door/Window 境界）のみが有効に効く。</p>
+<h3>5b.2 6 手法ベースライン比較（train）</h3>
+<div class="table"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th style="text-align: right;">uniform</th>
+<th style="text-align: right;">csc_default</th>
+<th style="text-align: right;">csc_grid</th>
+<th style="text-align: right;">fps</th>
+<th style="text-align: right;">curvature</th>
+<th style="text-align: right;">geoadapt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCR</td>
+<td style="text-align: right;">0.2877</td>
+<td style="text-align: right;">0.2888</td>
+<td style="text-align: right;"><strong>0.2918</strong></td>
+<td style="text-align: right;">0.2838</td>
+<td style="text-align: right;">0.2902</td>
+<td style="text-align: right;">0.2852</td>
+</tr>
+<tr>
+<td>BPR</td>
+<td style="text-align: right;">0.2253</td>
+<td style="text-align: right;">0.2236</td>
+<td style="text-align: right;"><strong>0.2273</strong></td>
+<td style="text-align: right;">0.2146</td>
+<td style="text-align: right;">0.2333</td>
+<td style="text-align: right;">0.2184</td>
+</tr>
+<tr>
+<td>ESR</td>
+<td style="text-align: right;">0.4244</td>
+<td style="text-align: right;"><strong>0.5990</strong></td>
+<td style="text-align: right;">0.4784</td>
+<td style="text-align: right;">0.4278</td>
+<td style="text-align: right;">0.3813</td>
+<td style="text-align: right;">0.5853</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>MCR/BPR</strong>: csc_grid が全 baseline に有意勝利（uniform/fps/geoadapt/csc_default、p &lt; 0.001）</li>
+<li><strong>ESR</strong>: csc_default（grid 最適化なし）が最強、csc_grid は MCR を取りに行った結果 ESR を犠牲に</li>
+<li>FPS は MCR で uniform よりわずかに上だが ESR で不利</li>
+<li>curvature_voxel（scattering ベース）は ESR で最低</li>
+</ul>
+<h3>5b.3 α/β スイープ（α=0..1）</h3>
+<div class="table"><table>
+<thead>
+<tr>
+<th>α</th>
+<th style="text-align: right;">MCR</th>
+<th style="text-align: right;">BPR</th>
+<th style="text-align: right;">ESR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.0 (pure CSC)</td>
+<td style="text-align: right;">0.2671</td>
+<td style="text-align: right;">0.2151</td>
+<td style="text-align: right;"><strong>0.6437</strong></td>
+</tr>
+<tr>
+<td>0.5</td>
+<td style="text-align: right;">0.2688</td>
+<td style="text-align: right;">0.2146</td>
+<td style="text-align: right;">0.6470</td>
+</tr>
+<tr>
+<td>1.0 (pure s_geo)</td>
+<td style="text-align: right;">0.2700</td>
+<td style="text-align: right;">0.2169</td>
+<td style="text-align: right;">0.6304</td>
+</tr>
+</tbody>
+</table></div>
+<p>→ α の影響は軽微。CSC と s_geo は MCR/BPR/ESR で大差なし。論文では α=0.5 を採用する正当化は弱い → α=0 (pure CSC) でも結論は同じになる。</p>
+<h3>5b.4 Shuffled CSC（grid 最良 scales を 20 回ランダム並べ替え）</h3>
+<div class="table"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th style="text-align: right;">grid mean</th>
+<th style="text-align: right;">shuffle 平均 ±std</th>
+<th style="text-align: right;">grid &gt; shuffle 数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCR</td>
+<td style="text-align: right;">0.2715</td>
+<td style="text-align: right;">0.2687 ±0.0003</td>
+<td style="text-align: right;"><strong>20/20</strong> ✅</td>
+</tr>
+<tr>
+<td>BPR</td>
+<td style="text-align: right;">0.2171</td>
+<td style="text-align: right;">0.2154 ±0.0007</td>
+<td style="text-align: right;"><strong>20/20</strong> ✅</td>
+</tr>
+<tr>
+<td>ESR</td>
+<td style="text-align: right;">0.4804</td>
+<td style="text-align: right;">0.6425 ±0.0071</td>
+<td style="text-align: right;"><strong>0/20</strong> ❌</td>
+</tr>
+</tbody>
+</table></div>
+<p>→ <strong>構造別重み設計は MCR/BPR で明確な信号を持つ</strong>（どのランダム順列にも勝つ）。
+→ ただし grid は MCR 最適化を選んだ結果、ESR で構造設計の良い面を打ち消してしまっている。</p>
+<h3>5b.5 統合的考察</h3>
+<ol>
+<li><strong>MCR と ESR は本質的に trade-off</strong>: grid (MCR 最適化) は ESR を 0.60 → 0.48 まで落とす</li>
+<li><strong>論文の主張は ESR ベースで組み立てるのが安全</strong>: csc_default で p &lt; 1e-8 が出ているのが最も再現性高い</li>
+<li><strong>MCR は意味のある向上が可能だが微弱</strong>: label-free のままでは構造的に上限がある</li>
+<li><strong>次の根本対応</strong>: Pareto front 探索 or label-aware 重み学習 or 別の最適化目的</li>
+</ol>
+<hr />
+<h2>6. 成果物</h2>
+<p><strong>実装（src/）</strong>:</p>
+<ul>
+<li><code>metrics.py</code> — MCR / BPR / ESR（純粋関数）</li>
+<li><code>descriptors.py</code> — 局所幾何記述子（linearity, planarity, scattering, verticality, elongation, boundary_continuity）</li>
+<li><code>csc.py</code> — CSC スコア + 保持優先度 s_E + structure_scales 対応</li>
+<li><code>reductions.py</code> — uniform_voxel / csc_voxel / fps_reduce / curvature_voxel / geoadapt_voxel</li>
+<li><code>tiles.py</code> — XY タイル分割</li>
+</ul>
+<p><strong>実験スクリプト（experiments/）</strong>:</p>
+<ul>
+<li><code>e_minimum.py</code> — §13.1 最小成立実験ランナー（H1/H3 検証）</li>
+<li><code>e_minimum_wilcoxon.py</code> — 片側 Wilcoxon + Bonferroni 補正（H1/H3）</li>
+<li><code>csc_grid_search.py</code> — CSC structure_scales の coordinate descent（train で MCR 最大化）</li>
+<li><code>e_baselines.py</code> — 6 手法（uniform/csc_default/csc_grid/fps/curvature/geoadapt）の同条件比較</li>
+<li><code>e_ablation.py</code> — α/β sweep + Shuffled CSC</li>
+</ul>
+<p><strong>結果（results/、.gitignore 対象でローカルのみ）</strong>:</p>
+<ul>
+<li><code>e_minimum/{metrics.csv, wilcoxon.md, run.log}</code></li>
+<li><code>csc_grid/{best_weights.json, eval.csv, summary.md, run.log}</code></li>
+<li><code>e_baselines/{metrics.csv, summary.md, run.log}</code></li>
+<li><code>e_ablation/{alpha_sweep.csv, shuffled_csc.csv, summary.md, run.log}</code></li>
+</ul>
+<hr />
+<h2>7. 卒論執筆への含意</h2>
+<p><strong>ポジティブ</strong>:</p>
+<ul>
+<li>CSC が ESR で <strong>強く有意（p &lt; 1e-8）に勝つ</strong>という、検証可能で再現可能な事実が得られた</li>
+<li>「構造的記述子に基づく適応的リダクションが、長尺な構造を統計的に有意に保持する」と書ける</li>
+</ul>
+<p><strong>慎重に書くべき点</strong>:</p>
+<ul>
+<li>ESR と CSC の記述子が一部重複している（fairness 問題）→ 論文では別指標との独立性を補強する必要がある</li>
+<li>MCR / BPR では H3 が不支持 → 単純 CSC は label-aware にしないと少数クラス保護にならない。これは E案 §15 の主張をそのままでは支持できないことを意味する</li>
+<li>→ 次フェーズで <strong>重み学習 + 追加ベースライン</strong> を入れて再検証することが必須</li>
+</ul></main></body></html>

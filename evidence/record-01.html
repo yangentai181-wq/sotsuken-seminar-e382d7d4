@@ -1,0 +1,25 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>README.md｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>README.md</h1><p class="note">比較条件・図の読み方・検証記録の公開抜粋です。内部の再描画コマンドと点群データは含めていません。</p><h1>実測建築点群の均一ボクセル / CSC 比較</h1>
+<p>作成日: 2026-10-12。ユーザー依頼:「普通のボクセル間引きと私の方法で、残る点がどう違うのか、実際の建築点群を使った比較図で見せて。」</p>
+<h2>成果物</h2>
+<ul>
+<li><code>architecture-overview.png</code>: 同じ視点・範囲で、入力 / 均一ボクセル / CSC を比較。枠は拡大範囲。</li>
+<li><code>architecture-detail.png</code>: 枠内の拡大。右図は均一だけ / CSCだけ / 両方に残る元の点を区別。</li>
+<li><code>comparison-metadata.json</code>: 条件、集計、入力・実装のSHA-256、検証内容。</li>
+<li><code>comparison-data.npz</code>: 共通入力、元点ID、各方式の選択ID、特徴量、投影座標。再描画用。</li>
+<li><code>build_comparison.py</code>: 再現用スクリプト。研究コードは変更せずimportして使用。</li>
+</ul>
+<h2>既存資産と条件</h2>
+<p>既存の <code>point-cloud-research/scripts/visualize_reduction.py</code> と ArCH 2_OSA の比較図を確認し、同じタイル5と乱数seed 0による80,000点抽出を再利用。既存画像は遠景の部材色分けが中心で個々の代表点の違いを識別しづらいため、実際の選択IDによる差分図を追加した。</p>
+<p>ArCH 2_OSA の前処理済み実測点群は7,123,548点。XYを3×3分割したタイル5の1,029,653点から、共通入力80,000点をランダム抽出した。事前抽出は描画だけでなく特徴量計算・間引きの前に行っている。建物全体・全密度での実験ではない。</p>
+<ul>
+<li>比較対象の「均一ボクセル」は研究コードの <code>uniform_voxel</code>: 各占有区画から元の点をランダムに1点選ぶ。一般的な重心置換方式の結果ではない。</li>
+<li>CSCは現行の <code>compute_descriptors(k=30)</code> → <code>retention_priority(alpha=0.5)</code> → <code>csc_voxel</code> を使用。部材ラベルは間引きに使わない。</li>
+<li>同じ区画幅 0.07584617227315903 m、原点基準の同じ区画を共有。</li>
+<li>目標70%削減、実際68.58%削減。どちらも25,136点。</li>
+<li>元点IDが一致するのは11,840点。13,296区画（52.896%）で代表点が異なる。</li>
+<li>入力時の長尺性 &gt; 0.85 を満たす426点のうち、均一が116点、CSCが131点保持。これはこの入力範囲に限った直接集計で、物理精度や部材認識性能の評価ではない。</li>
+</ul>
+<h2>図の読み方と検証</h2>
+<p>全体図のオレンジは入力時の幾何特徴（長尺性）を示し、柱や窓などの正解部材ラベルではない。拡大図の色は保持方式を示す。両図とも同じ平行投影を使用し、元の座標を変更せず、対象の点をすべて描画した。奥行きの異なる点が投影で重なる場合がある。</p>
+<p>拡大範囲は入力点群の図から目視で細い線状の部分を選択し、手法間の改善量を最大化して選んだものではない。区画内の別の点が拡大窓の境界をまたぐため、窓内に見える点数は262点 / 263点となるが、入力全体での残存点数は一致する。</p>
+<p>実行時assertで、残存点数一致・占有区画一致・出力座標の元点との完全一致・全区画でCSCが最高得点を選択、を確認。両PNGを開き、日本語、凡例、共通の表示範囲と拡大枠、点の違いを確認した。</p></main></body></html>

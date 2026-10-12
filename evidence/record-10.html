@@ -1,0 +1,107 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>csc.py｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>csc.py</h1><p class="note">保存済み資料の公開用コピーです。作成時の実験条件・記録として参照し、今回の新しい実験結果とは区別してください。</p><pre>&quot;&quot;&quot;
+研究計画書E案 §7.1 / §7.3 — 部材構造適合スコア (CSC)。
+
+CSC(p_i) = max_{k ∈ K} ( w_k^T f_k(p_i) )
+
+K と f_k は §7.3 のテーブルに準拠:
+    long         : elongation, linearity                -&gt; molding
+    column       : verticality, linearity               -&gt; column
+    planar-edge  : planarity, boundary_continuity (rev) -&gt; door/window 境界
+    frame        : linearity, boundary_continuity       -&gt; door/window 枠
+    curved       : scattering, normal variation         -&gt; arch
+
+normal variation は (1 - boundary_continuity) で近似する
+（法線が近傍で大きく変化する点ほど高くなる）。
+
+重み w_k は初期値として手動設定。§12 批判2 への対応として、後段で
+train上グリッドサーチによる最適化が可能だが、まずは初期値で実験を回す。
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import numpy as np
+
+
+# §7.3 に対応する初期重み。各構造ごとに使う記述子と重みを定義。
+DEFAULT_WEIGHTS: dict[str, dict[str, float]] = {
+    &quot;long&quot;:         {&quot;elongation&quot;: 0.5, &quot;linearity&quot;: 0.5},
+    &quot;column&quot;:       {&quot;verticality&quot;: 0.5, &quot;linearity&quot;: 0.5},
+    &quot;planar_edge&quot;:  {&quot;planarity&quot;: 0.5, &quot;boundary_discontinuity&quot;: 0.5},
+    &quot;frame&quot;:        {&quot;linearity&quot;: 0.5, &quot;boundary_continuity&quot;: 0.5},
+    &quot;curved&quot;:       {&quot;scattering&quot;: 0.5, &quot;normal_variation&quot;: 0.5},
+}
+
+
+def _build_feature(desc: dict[str, np.ndarray], name: str) -&gt; np.ndarray:
+    &quot;&quot;&quot;記述子辞書から名前指定で取り出す。派生量は内部で構築。&quot;&quot;&quot;
+    if name in desc:
+        return desc[name]
+    if name == &quot;boundary_discontinuity&quot;:
+        return 1.0 - desc[&quot;boundary_continuity&quot;]
+    if name == &quot;normal_variation&quot;:
+        return 1.0 - desc[&quot;boundary_continuity&quot;]
+    raise KeyError(f&quot;Unknown descriptor: {name}&quot;)
+
+
+def csc_score(descriptors: dict[str, np.ndarray],
+              weights: dict[str, dict[str, float]] | None = None,
+              structure_scales: dict[str, float] | None = None) -&gt; np.ndarray:
+    &quot;&quot;&quot;各点に対する CSC スコアを計算。
+
+    Parameters
+    ----------
+    descriptors : src.descriptors.compute_descriptors() の戻り値
+    weights : 構造別の記述子重み辞書。None なら DEFAULT_WEIGHTS を使う。
+    structure_scales : 各構造のスコアに掛ける倍率辞書。グリッドサーチ用。
+                       None なら全構造 1.0。
+
+    Returns
+    -------
+    (N,) のCSCスコア配列。
+    &quot;&quot;&quot;
+    if weights is None:
+        weights = DEFAULT_WEIGHTS
+
+    N = len(next(iter(descriptors.values())))
+    per_struct = np.zeros((len(weights), N), dtype=np.float64)
+
+    for s_i, (struct_name, w_map) in enumerate(weights.items()):
+        score_k = np.zeros(N, dtype=np.float64)
+        for feat_name, w in w_map.items():
+            score_k += w * _build_feature(descriptors, feat_name)
+        scale = 1.0 if structure_scales is None else structure_scales.get(struct_name, 1.0)
+        per_struct[s_i] = score_k * scale
+
+    # max over K
+    return per_struct.max(axis=0)
+
+
+def geometry_score(descriptors: dict[str, np.ndarray]) -&gt; np.ndarray:
+    &quot;&quot;&quot;§7.2 の s_geo: 曲率・エッジ等の標準的局所幾何スコア。
+
+    ここでは curvature 相当として (1 - planarity) と
+    boundary_discontinuity を平均したものを使う。
+    具体的な選択は実装の自由度内。
+    &quot;&quot;&quot;
+    plan = descriptors[&quot;planarity&quot;]
+    bdc = 1.0 - descriptors[&quot;boundary_continuity&quot;]
+    return 0.5 * (1.0 - plan) + 0.5 * bdc
+
+
+def retention_priority(descriptors: dict[str, np.ndarray],
+                       alpha: float = 0.5,
+                       weights: dict[str, dict[str, float]] | None = None,
+                       structure_scales: dict[str, float] | None = None,
+                       ) -&gt; np.ndarray:
+    &quot;&quot;&quot;§7.2 の s_E = alpha * s_geo + beta * CSC (beta = 1 - alpha)。&quot;&quot;&quot;
+    if not 0.0 &lt;= alpha &lt;= 1.0:
+        raise ValueError(&quot;alpha must be in [0, 1]&quot;)
+    beta = 1.0 - alpha
+    s_geo = geometry_score(descriptors)
+    s_csc = csc_score(descriptors, weights=weights, structure_scales=structure_scales)
+    # 0-1 正規化（各々の min-max で割り当て公平にする）
+    def _norm(x):
+        lo, hi = x.min(), x.max()
+        return (x - lo) / (hi - lo + 1e-12)
+    return alpha * _norm(s_geo) + beta * _norm(s_csc)
+</pre></main></body></html>

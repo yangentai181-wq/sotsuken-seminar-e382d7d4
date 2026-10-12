@@ -1,0 +1,223 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>研究方向_出口別削減評価_2026-10-04.md｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>研究方向_出口別削減評価_2026-10-04.md</h1><p class="note">保存済み資料の公開用コピーです。作成時の実験条件・記録として参照し、今回の新しい実験結果とは区別してください。</p><h1>研究方向：出口別の点群削減評価</h1>
+<ul>
+<li>作成日: 2026-10-04</li>
+<li>対象: 卒業研究「建築点群リダクション後の品質評価」</li>
+<li>位置づけ: 中間試問後の方針具体化と、次の実験の判断記録</li>
+</ul>
+<h2>結論</h2>
+<p>解決したい困りごとは、<strong>点群データが重すぎて処理が進まないこと</strong>である。必要な形や属性を残し、手元のPCで最後まで処理できる量へ減らすことを目指す。止まるソフト・工程・実ファイルと、メモリ／計算／入出力のどれが主因かは未特定。</p>
+<p>CSCという一手法の優位性の証明を目的にせず、<strong>用途に必要な情報・合格条件から、間引きの設定を選びやすくすること</strong>を解決の手段に置く。用途調査や設定ガイドの存在だけを、処理停止の解決とみなさない。</p>
+<p>2026-10-04の追加調査で、一次資料19件を8用途系統／11選択肢に整理した。<a href="record-12.html">用途別の調査</a>と、複数用途を選べる設定ガイド（公開版未収録）を参照する。ガイドは試行候補の生成であり、全用途の最適値や実用精度を検証した成果ではない。</p>
+<p>現在の結果は、同じCSCでも評価軸によって結論が変わることを示している。</p>
+<ul>
+<li>ESR（長尺構造点保持率）: CSCが均一間引きより大きく改善</li>
+<li>MCR（少数クラス点保持率）: ほぼ同等</li>
+<li>BPR（部材境界点保持率）: CSCは均一間引きを上回らない</li>
+<li>幾何忠実度: 全43タイルのD1誤差で、全削減率・全タイルにおいてCSCが不利</li>
+</ul>
+<p>卒業研究の主な問いは「用途に必要な情報を守りながら、手元のPCで処理できる量へ点群を減らし、その設定を容易に選ぶには、どんな要求・評価・選択手順が必要か」である。</p>
+<p>成功は、処理完了・読込と間引きを含む全工程時間・最大メモリ・用途の品質・設定の容易さで測る。既存実験は最大8万点の範囲ごとの比較で、巨大な元ファイルの処理完了は未確認。Houdini・環境・費用の調査（公開版未収録）は実装手段の検討であり、Houdiniの動作や全規模の処理成功を実証したものではない。</p>
+<p>その中の一つの検証課題として、次を扱う。</p>
+<blockquote>
+<p>MCR・BPR・ESRのような軽量な保持率は、削減後の独立な品質や出口性能をどこまで予測でき、どの条件で外れるか。</p>
+</blockquote>
+<h2>前回からの研究上の変化</h2>
+<p>前回も「利用目的・評価指標・削減条件の対応」を最終成果としていた。中間試問後に変わったのは、方向そのものよりも実験の解像度である。</p>
+<ol>
+<li>「利用目的」を、表示、セグメンテーション、シミュレーション、メッシュ化などの出口に分けた。</li>
+<li>出口ごとに必要な情報と最終性能を分けた。</li>
+<li>MCR・BPR・ESRを最終性能ではなく、出口性能を予測する候補指標として位置づけ直した。</li>
+<li>BPRの削減率別再分析と、独立な幾何忠実度の全43タイル評価を実行した。</li>
+<li>同一の削減点群からMCR・BPR・ESRも再計算し、幾何誤差差との相関を調べた。</li>
+</ol>
+<h2>現在までの証拠</h2>
+<h3>削減率スイープ</h3>
+<p>ArCHの既存結果では、50・70・90%削減のすべてで次の傾向が出ている。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th>CSCと均一間引きの比較</th>
+<th>現時点の解釈</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCR</td>
+<td>差は約0</td>
+<td>CSCは少数部材を特別に保護していない</td>
+</tr>
+<tr>
+<td>BPR</td>
+<td>CSCがわずかに低い</td>
+<td>CSCは部材境界の保持に最適化されていない</td>
+</tr>
+<tr>
+<td>ESR</td>
+<td>CSCが大きく高い</td>
+<td>CSCは長尺構造点を優先して残す</td>
+</tr>
+</tbody>
+</table></div>
+<p>この結果だけでも「何を残したいかによって、同じ手法の評価が変わる」ことを示せる。ただし、三つとも元点群の特定点が残った割合であり、下流性能そのものではない。</p>
+<h3>幾何忠実度の全43タイル評価</h3>
+<p>ArCH 5シーン・全43タイルで、元点群から削減後点群への距離を測った。各タイル・削減率で、均一間引きとCSCの削減後点数を一致させた。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th style="text-align: right;">目標削減率</th>
+<th style="text-align: right;">D1相対差平均</th>
+<th style="text-align: right;">D1でCSC良 / 悪</th>
+<th style="text-align: right;">D2相対差平均</th>
+<th style="text-align: right;">D2でCSC良 / 悪</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">50%</td>
+<td style="text-align: right;">+1.89%</td>
+<td style="text-align: right;">0 / 43</td>
+<td style="text-align: right;">+1.49%</td>
+<td style="text-align: right;">7 / 36</td>
+</tr>
+<tr>
+<td style="text-align: right;">70%</td>
+<td style="text-align: right;">+2.71%</td>
+<td style="text-align: right;">0 / 43</td>
+<td style="text-align: right;">+4.69%</td>
+<td style="text-align: right;">3 / 40</td>
+</tr>
+<tr>
+<td style="text-align: right;">90%</td>
+<td style="text-align: right;">+3.66%</td>
+<td style="text-align: right;">0 / 43</td>
+<td style="text-align: right;">+5.17%</td>
+<td style="text-align: right;">2 / 41</td>
+</tr>
+</tbody>
+</table></div>
+<p>誤差は小さいほど良い。D1では全条件・全43タイルでCSCの誤差が大きく、D2でもCSCが不利なタイルが大半だった。ただし43タイルは5シーン内の範囲であり、独立した43建物ではない。従来のタイル単位の小さなp値を建物一般への推論には使わない。5シーンを単位にしたD1の増加は+1.88/+2.71/+3.71%、両側exact Wilcoxonは各率p=0.0625だった。ESRの改善は、このデータ内でも点群全体の被覆誤差改善を保証しない。</p>
+<p>旧D2は元点群の計算済み法線を継承している。追加で削減後XYZだけから法線を推定し直した258条件では、5シーン等重みのD2増加は+0.94/+2.64/+4.90%で、全5シーン・全率でCSCの平均誤差が大きかった。実際のメッシュ再構成の評価ではない。</p>
+<h3>保持率と幾何誤差差の関係</h3>
+<p>同じ258行から <code>CSC − 均一間引き</code> の差を作り、Spearman順位相関を調べた。</p>
+<ul>
+<li>MCR・BPR: 幾何誤差差との明確な相関は未確認</li>
+<li>ESRとD1: 70%で <code>ρ = -0.406, p = 0.0069</code>、90%で <code>ρ = -0.470, p = 0.0015</code></li>
+<li>ESRとD2: 70%で <code>ρ = -0.366, p = 0.0159</code>、90%で <code>ρ = -0.515, p = 0.0004</code></li>
+</ul>
+<p>負の相関は、今回のデータ内でESR改善が大きいタイルほどCSCの幾何誤差の悪化幅が小さい傾向を示す。ただしD1の絶対結果は全43タイルでCSCが不利である。シーン内の非独立性・複数比較・未使用データでの検証欠如があるため、これらのタイル相関とp値は探索用に限定し、予測力の証明とはしない。</p>
+<h2>推奨する研究設計</h2>
+<h3>実験1：幾何忠実度の全面評価（完了）</h3>
+<p>既存データとCPUだけで実行し、ESRとの循環を避けた独立評価を完了した。</p>
+<ul>
+<li>データ: ArCHの全43タイル</li>
+<li>手法: 均一ボクセル間引き、CSC</li>
+<li>削減率: 50%、70%、90%</li>
+<li>指標:</li>
+<li>元点→削減点のRMS距離</li>
+<li>元点→削減点の95パーセンタイル距離</li>
+<li>元点→最近傍削減点の法線面へのRMS距離</li>
+<li>同95パーセンタイル距離</li>
+<li>正規化: タイルのバウンディングボックス対角長</li>
+<li>比較: タイル単位の対応差を記述し、シーン内で集約した5シーンの差も確認する。従来のタイル単位p値は一般化の根拠にしない</li>
+<li>追加分析: ESR差と幾何誤差差の相関（完了）</li>
+</ul>
+<h4>判定結果</h4>
+<ul>
+<li>CSCの誤差が大きい結果となった。</li>
+<li>ESRの成功と幾何忠実度の失敗を、proxyの適用限界として研究成果にする。</li>
+<li>同時に、ESR改善量と誤差悪化幅には70・90%削減で負の相関があるため、完全に無関係とは扱わない。</li>
+</ul>
+<p>事前にどの結果でも研究上の意味が残る設計とし、今回の結果をproxyの適用限界として解釈した。</p>
+<h3>実験2：セグメンテーションへの接続（CPU簡易評価を実施）</h3>
+<p>BPRを最終指標にせず、実際の境界認識やクラス別IoUとの関係を調べる。</p>
+<p>ArCH用RandLA-Netのコードはあるが、利用可能なチェックポイントはSemanticKITTI用19クラスである。ArCH用10クラスの完成した学習済みモデルは確認できていない。そこで既存の幾何特徴・削減コードと、導入済みscikit-learnのRandom Forestを組み合わせて、CPUで再現できる簡易比較を実施した。</p>
+<p>比較の条件は次の通り。</p>
+<ol>
+<li>5シーンのうち4シーンの元点群で学習し、残り1シーンで評価する比較を5回行う。</li>
+<li>各回の同一分類器を元点群・均一間引き・CSCの50/70/90%削減へ固定して適用する。</li>
+<li>特徴は各入力のXYZだけから再計算する。正解、RGB、保存済み法線は入力にしない。</li>
+<li>減らした点の予測を最近傍の元の点へ戻し、全方法を同じ正解点で採点する。</li>
+<li>シーンごとに混同行列を合算してから、正解に存在するクラスの平均IoUを計算し、最後に5シーンを等重みで平均する。</li>
+<li>全43範囲・301入力条件を処理。全点Undefined10の2範囲を除く、41範囲・287条件に分類成績がある。</li>
+</ol>
+<p>均一/CSCの平均IoUは50%削減で24.39/24.37%、70%で24.12/23.94%、90%で20.32/20.17%。差は-0.02/-0.18/-0.15ポイントと小さく、少数部材の平均IoUと正解境界点上の部位正答率でも一貫した改善は確認できなかった。同等性や実用差を証明した結果ではない。</p>
+<p>元点群は22.71%であり、50・70%削減では平均成績がやや高い。近傍範囲の変化や最近傍戻しも含む固定評価器の結果なので、「削減は必ず分類性能を落とす」とは言わない。絶対性能は低く、この分類器で5シーンを比較した範囲に限定する。BPRと境目正答、MCRと少数部材IoUのシーン単位相関も算出したが、5点のみの探索で、予測力は未検証である。</p>
+<p>分類器の乱数だけを0/1/2に変えた感度確認も実施し、元の分割・訓練サンプル・入力点・特徴は固定した。入力サンプルの乱数や別方式の頑健性まで確認したものではない。</p>
+<h3>実験3：実測建築への外部確認</h3>
+<p>浄土寺浄土堂とHoudiniは破棄しない。評価指標の有効範囲をArCHで固めた後、実測建築で同じ傾向が見えるかを確認する外部検証として使う。</p>
+<p>Houdiniは研究対象ではなく、同条件の削減点群を生成・可視化する実験環境とする。</p>
+<p>その前段として、手元の別データ3DITAを全8寺院・32範囲・192条件で評価した。CSCを再調整せず使用し、全率・全32範囲で点→点誤差が大きくなった。寺院を等重みで平均した増加は+1.59/+2.45/+2.53%。細長い形の点の保持率は、元から対象点がない3範囲を除く29範囲で集約し、全8寺院で改善した。除外3範囲は元の点群から対象点0を再確認しており、未定義値を0に置き換えてはいない。対象数は cross_dataset_geometry_3dita_coverage.json に記録した。ESRと全体の距離誤差を区別する必要はこの別データでも見られた。ただし、日本建築の実測、分類、メッシュ再構成、シミュレーションを検証したものではない。</p>
+<h2>用途調査の範囲と、実験の段階</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>出口</th>
+<th>現時点の確認</th>
+<th>次の接続</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表示・共有</td>
+<td>文献調査と設定入口を整理</td>
+<td>指定端末・視点で操作速度と見え方を測る</td>
+</tr>
+<tr>
+<td>形の復元</td>
+<td>元点群との距離は測定済み。実際のメッシュ復元は未実施</td>
+<td>法線・復元方式を固定し、実際の面と開口を評価する</td>
+</tr>
+<tr>
+<td>建物モデル化</td>
+<td>文献調査と必要情報を整理</td>
+<td>寸法・部材・開口と手直し量を評価する</td>
+</tr>
+<tr>
+<td>部位分類</td>
+<td>CPU簡易比較を実施</td>
+<td>同じ採点条件の実用評価器・未使用建物で確認する</td>
+</tr>
+<tr>
+<td>位置合わせ</td>
+<td>文献調査と多段階設定を整理</td>
+<td>粗合わせと密な精密化の総時間・独立基準誤差を測る</td>
+</tr>
+<tr>
+<td>計測・変化検出</td>
+<td>文献調査。計算地点だけ減らす別ルートを整理</td>
+<td>元の不確実性・独立基準・検出限界を確認する</td>
+</tr>
+<tr>
+<td>構造・流体・音響解析</td>
+<td>各用途を分けて調査。解析精度は未検証</td>
+<td>解析条件が揃えば形状と解析メッシュの影響を分けて比較する</td>
+</tr>
+<tr>
+<td>記録保存</td>
+<td>原本と用途別コピーを分ける運用案</td>
+<td>取得・加工履歴と再利用性を確認する</td>
+</tr>
+</tbody>
+</table></div>
+<p>研究全体を二用途に限定しない。広い用途調査と共通の設定支援を研究の中心にし、既存の距離・分類実験を代表的な証拠として使う。追加の代表実験は、用途間の要求の違い・衝突を示せる組合せと利用条件で選ぶ。条件が揃わない解析を検証済みとはしないが、一律に対象外と固定もしない。</p>
+<p>複数用途を共有するコピーでは、各用途の必須条件をすべて満たす候補を残す。両立しなければ用途別のコピーに分ける。品質に加え、設定時間・試行回数・誤設定を測り、「設定が容易になった」ことも今後の検証対象にする。</p>
+<h2>先行研究との接続</h2>
+<p>点群サンプリングは、後工程を考慮しない方法では下流性能が低下しうるため、タスクに合わせて学習・適応する研究が進んでいる。</p>
+<ul>
+<li><a href="https://openaccess.thecvf.com/content_CVPR_2020/html/Lang_SampleNet_Differentiable_Point_Cloud_Sampling_CVPR_2020_paper.html">SampleNet（CVPR 2020）</a>は、従来サンプリングが下流タスクを考慮しない問題を示し、分類・再構成・位置合わせでタスク依存のサンプリングを評価した。</li>
+<li><a href="https://openaccess.thecvf.com/content/CVPR2024/html/Liu_LTA-PCS_Learnable_Task-Agnostic_Point_Cloud_Sampling_CVPR_2024_paper.html">LTA-PCS（CVPR 2024）</a>は、タスク固有サンプリングとタスク非依存サンプリングの間を課題として扱い、複数の下流タスクで評価した。</li>
+<li><a href="https://openaccess.thecvf.com/content/CVPR2025/html/Shao_MICAS_Multi-grained_In-Context_Adaptive_Sampling_for_3D_Point_Cloud_Processing_CVPR_2025_paper.html">MICAS（CVPR 2025）</a>は、再構成、ノイズ除去、位置合わせ、セグメンテーションで必要なサンプリングが異なることを前提に、タスク適応型の仕組みを提案している。</li>
+<li><a href="https://isprs-annals.copernicus.org/articles/X-1-W1-2023/239/2023/">歴史建築点群のEEI-Net（ISPRS 2023）</a>は、歴史建築の部材セグメンテーションで境界情報を明示的に扱っている。BPRを境界側の候補指標として検証する根拠になる。</li>
+<li><a href="https://openaccess.thecvf.com/content/CVPR2025/papers/Gao_SUM_Parts_Benchmarking_Part-Level_Semantic_Segmentation_of_Urban_Meshes_CVPR_2025_paper.pdf">SUM Parts（CVPR 2025）</a>は、点数だけでなくサンプリング分布がセグメンテーション性能に影響することを比較している。</li>
+</ul>
+<p>これらは本研究の結果を直接証明するものではない。ただし、「一つのサンプリングが全用途で最適とは限らず、下流タスクで評価する必要がある」という研究方向を支持する。</p>
+<h2>次回ゼミ後の完成条件</h2>
+<p>幾何忠実度の全43タイル評価、対応検定、保持率との相関分析は完了した。次は以下を進める。</p>
+<ol>
+<li>CPU簡易分類器による同一評価器比較、BPR/MCRとの対応分析、乱数感度確認は実施した。</li>
+<li>実測建築の入力は、XYZ・単位・取得条件・利用権限を確認した点群が必要。BPR・分類成績を測るには、人が付けた部位の正解も必要。今回確認した両研究リポジトリ内に、浄土寺の評価用点群は見つからなかった。</li>
+<li>MacのPyTorchはCUDA不可・MPS可。既存RandLA-Netの学習コードはCUDAまたはCPUで、MPS利用を確認していない。完成したArCHモデルがないため、未学習・別データ用重みを本評価として使わない。</li>
+<li>出口ごとの許容品質低下は、今回の結果から勝手に決めない。実際の利用者・先生との判断事項として残す。</li>
+</ol>
+<p>最新の条件・数値・残作業は ゼミ進捗（公開版未収録）、入力準備の仕様は <code>external_validation_protocol_2026-10-05.json</code> を参照する。</p></main></body></html>

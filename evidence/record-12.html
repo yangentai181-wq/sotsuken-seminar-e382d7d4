@@ -1,0 +1,459 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>出口用途_一次資料調査_2026-10-04.md｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>出口用途_一次資料調査_2026-10-04.md</h1><p class="note">保存済み資料の公開用コピーです。作成時の実験条件・記録として参照し、今回の新しい実験結果とは区別してください。</p><h1>点群の「使い道」から、間引きの設定を選ぶ</h1>
+<p>調査日：2026-10-04。対象は建築・文化財の点群。ここで「出口」は、その後にデータを使う用途を指す。</p>
+<h2>今回、研究の中心として明確にしたこと</h2>
+<blockquote>
+<p>出口の用途を広く調べ、複数の用途で必要な情報を整理し、間引きの設定を選びやすくする。</p>
+</blockquote>
+<p>「CSCという一方式が常に優れること」や「分類器そのものの開発」が主目的ではない。「形と分類の二用途だけに研究対象を限定する」という前の案も固定しない。調査と設定の枠組みは広く扱い、実験は代表例から段階的に進める。</p>
+<p>今回の成果は、一次資料19件、8用途系統／11選択肢のカタログと、複数用途を選べる設定ガイド（公開版未収録）。ガイドは条件から<strong>試す候補</strong>を作るもので、最適な設定を実験で決定したものではない。</p>
+<p>保存するJSONは試行計画であり、解析ソフトや既存APIにそのまま渡す実行用の引数ファイルではない。<code>descriptor_k</code> は特徴計算の <code>k</code>、<code>alpha</code> は優先度計算、幅または削減割合は点の選択に分けて設定する。今回、データの間引き実行を自動化したとは主張しない。</p>
+<h2>調査の方法と到達範囲</h2>
+<p>問いを「用途で守る情報」「出口で測る成績」「変更できる設定」「必要な入力」に分け、以下を検索した。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>調査軸</th>
+<th>主な検索語</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表示</td>
+<td>point cloud visualization / level of detail / progressive rendering</td>
+</tr>
+<tr>
+<td>復元</td>
+<td>point cloud surface reconstruction / normals / Poisson / ball pivoting</td>
+</tr>
+<tr>
+<td>建物モデル</td>
+<td>point cloud simplification / scan-to-BIM / geometric features / openings</td>
+</tr>
+<tr>
+<td>分類</td>
+<td>task-specific sampling / task-agnostic sampling / historical building boundary</td>
+</tr>
+<tr>
+<td>位置合わせ</td>
+<td>global registration / voxel / multi-scale ICP</td>
+</tr>
+<tr>
+<td>計測・変化</td>
+<td>laser scanner uncertainty / M3C2 / core points / error propagation</td>
+</tr>
+<tr>
+<td>解析</td>
+<td>laser scanning finite element / snappyHexMesh / acoustics length scales</td>
+</tr>
+<tr>
+<td>保存</td>
+<td>laser scanning heritage / archive / original data</td>
+</tr>
+<tr>
+<td>反証と新しさ</td>
+<td>LTA-PCS / MICAS / multi-task point cloud sampling 2026</td>
+</tr>
+</tbody>
+</table></div>
+<p>論文著者・出版社・研究機関・開発元の一次資料を優先した。採用資料は2013〜2025年の論文・ガイドと現行または版固定の公式文書。2026年の研究も検索したが、新規性や文献の完全網羅を保証する調査ではない。複数用途を扱う先行研究はすでにあるため、「複数出口対応が世界初」とは主張しない。</p>
+<p>公開本文の関連箇所、要旨、検索経由の本文取得を区別した。直接取得が失敗した資料を、全文精読した扱いにはしない。設定の数値や実験表を読み切れていない資料から、最適値を引用しない。分類・位置合わせなどの学習研究は、建築の大規模実測点群とは条件が異なる。</p>
+<h2>まず重要な区別：どのデータを減らすのか</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>作業の役割</th>
+<th>対象</th>
+<th>原本との関係</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>見せる</td>
+<td>表示用の軽いコピー・段階別データ</td>
+<td>原本は保管し、見る距離に応じて詳細を切り替えられる</td>
+</tr>
+<tr>
+<td>分類・復元・モデル化</td>
+<td>処理用点群</td>
+<td>使用する属性と、出口の品質を確認する</td>
+</tr>
+<tr>
+<td>位置合わせ</td>
+<td>粗いコピー→密な点群で精密化</td>
+<td>一段階の削減だけで全処理を完結させない</td>
+</tr>
+<tr>
+<td>変化検出</td>
+<td>結果を出す計算地点だけ</td>
+<td>密な計算材料を残す方式を別ルートで試す</td>
+</tr>
+<tr>
+<td>物理解析</td>
+<td>点群→表面／部材→解析メッシュ</td>
+<td>それぞれの解像度・誤差・設定を分ける</td>
+</tr>
+<tr>
+<td>記録保存</td>
+<td>元の観測データと取得履歴</td>
+<td>本研究の運用案では原本を間引かず、派生コピーを作る</td>
+</tr>
+</tbody>
+</table></div>
+<p>M3C2原著は、計算結果を出す地点（core points）を間引き版にしながら、方向・距離の計算に密な元点群を使える構成を説明している。法線推定を間引き版で高速化する選択肢もあるので、「M3C2では元点群を一切減らせない」という意味ではない。計算地点だけの削減と、計算に使う本体の削減を別実験にするという示唆である。<a href="https://arxiv.org/abs/1302.1183">S18: M3C2原著</a></p>
+<h2>用途別：何を守り、何を確かめるか</h2>
+<p>下表の「評価・設定への接続」は、文献を踏まえた<strong>本研究の提案</strong>。各文献がこの評価セットやCSCの値を実証した、という意味ではない。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>残す情報</th>
+<th>出口で測る成績</th>
+<th>間引き側の入口／別工程の設定</th>
+<th>主な出典</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表示・共有・VR</td>
+<td>外観、輪郭、色、見る距離で必要な細部</td>
+<td>指定端末の操作速度、メモリ、指定視点での見え方</td>
+<td>セル幅・点数予算／表示の段階的詳細度</td>
+<td>S01–S02</td>
+</tr>
+<tr>
+<td>表面・メッシュ復元</td>
+<td>面の向きと広がり、稜線、曲面、開口</td>
+<td><strong>実際に復元した面</strong>までの距離、意図しない穴・接続、復元時間</td>
+<td>セル幅、優先度、近傍／復元方式、法線、復元解像度</td>
+<td>S03、S06</td>
+</tr>
+<tr>
+<td>建物モデル化・図面化</td>
+<td>部材寸法、厚み、開口、部材のつながり</td>
+<td>寸法・位置・開口面積の偏り、部材の不足、手直し量</td>
+<td>セル幅、構造別の相対的な優先度／部材の当てはめ</td>
+<td>S11–S12</td>
+</tr>
+<tr>
+<td>部位分類</td>
+<td>少数部材、意味上の境目、局所形状、必要属性</td>
+<td>同じ正解点でのクラス別IoU、少数部材の見落とし、境目の分類、時間</td>
+<td>セル幅、混ぜ方、近傍／固定分類器・再学習・結果の戻し方</td>
+<td>S06–S10</td>
+</tr>
+<tr>
+<td>位置合わせ</td>
+<td>共通範囲、位置を特定できる特徴、面の向き</td>
+<td>独立な基準での位置・角度誤差、成功率、全工程時間</td>
+<td>段階別セル幅／特徴半径、対応距離、反復条件</td>
+<td>S04–S05</td>
+</tr>
+<tr>
+<td>寸法・施工状態の計測</td>
+<td>測る面・角・開口、単位、取得／位置合わせ情報</td>
+<td>独立基準に対する寸法の偏りと不確実性</td>
+<td>セル幅、対象部位の別保持／当てはめ・外れ値処理</td>
+<td>S17</td>
+</tr>
+<tr>
+<td>変形・経年変化</td>
+<td>表面粗さ、近傍点数、計測・位置合わせの誤差</td>
+<td>検出限界、誤検出、基準変化に対する偏り</td>
+<td>計算地点の間隔／方向推定範囲、比較範囲、最低点数</td>
+<td>S18–S19</td>
+</tr>
+<tr>
+<td>構造・振動解析</td>
+<td>厚み、断面、開口、部材接続、材料との対応</td>
+<td>断面・体積・接続、同条件の変位／固有振動数、メッシュ収束</td>
+<td>点群セル幅／解析要素、材料、荷重、支持条件</td>
+<td>S14</td>
+</tr>
+<tr>
+<td>風・換気などの流体解析</td>
+<td>入口・出口、狭い通路、壁面、稜線</td>
+<td>開口面積・通路幅、同条件の流量／圧力、メッシュ収束</td>
+<td>点群セル幅／表面品質、体積セル、局所細分化、境界層</td>
+<td>S15</td>
+</tr>
+<tr>
+<td>音響解析</td>
+<td>室形状、反射面、開口、材料属性</td>
+<td>形状の偏り、同方式・同周波数の音圧／残響等、メッシュ収束</td>
+<td>点群セル幅／波長・方式に応じた解析メッシュ</td>
+<td>S16</td>
+</tr>
+<tr>
+<td>文化財の記録保存</td>
+<td>観測点、属性、単位、座標系、取得・加工履歴</td>
+<td>原本・履歴の完全性、再利用と再現の可否</td>
+<td>原本は保管、用途別コピーのみ間引く運用案</td>
+<td>S13</td>
+</tr>
+</tbody>
+</table></div>
+<p>専門用語を短く言い換えると、ボクセルは「空間を区切る小さな箱」、法線は「面が向く方向」、IoUは「正解と予測の重なり」、メッシュは「点などをつないで作る面や解析用の区切り」である。表示のLODは「見る距離などで細かさを切り替える仕組み」。</p>
+<h3>物理解析は、一つの出口ではない</h3>
+<p>構造解析の建築事例では内外の形から厚み・体積を復元し、材料を割り当てて解析要素を作る。OpenFOAMのメッシュ生成はSTL/OBJ表面から体積セルを作り、局所細分化や境界層を別設定にする。音響では波長・最小形状寸法・解析メッシュ幅が別尺度で、解析方式によっても条件が変わる。この三つは「点を何％減らすとよいか」だけでは決まらない。<a href="https://amsacta.unibo.it/id/eprint/4246/">S14: 構造解析事例</a>、<a href="https://doc.cfd.direct/openfoam/user-guide-v13/snappyhexmesh">S15: OpenFOAM公式</a>、<a href="https://doc.comsol.com/6.4/doc/com.comsol.help.aco/aco_introduction.02.04.html">S16: COMSOL公式</a></p>
+<p>解析メッシュの要素幅を、そのまま点群の <code>voxel_size</code> に置き換えない。点群削減→形状復元→解析メッシュ→解析結果を分け、材料・荷重・境界条件等を固定して比較する。解析の検証や実用精度の保証はまだ行っていない。</p>
+<h3>寸法と変化の精度は、元点群との差だけでは決まらない</h3>
+<p>元の観測点にも、装置・表面・取得位置・位置合わせなどの誤差がある。「元点群からあまり離れていない」と「実物を正しい寸法で測れている」は別。平滑化や外れ値の除去で結果が改善する場合はあっても、単なる間引きで元の計測・位置合わせ誤差が補正されるわけではない。<a href="https://www.nist.gov/publications/performance-evaluation-terrestrial-laser-scanners-review">S17: NISTレビュー</a></p>
+<h2>同じ点群に複数用途があるときの選び方</h2>
+<ol>
+<li>原本と取得・加工の履歴を維持する。</li>
+<li>各用途で必須の品質と、許容できる低下を定義する。未定の数値は捏造しない。</li>
+<li>共有する処理用コピーについては、<strong>すべての必須条件を満たす候補の集合</strong>を取る。各成績を単純平均し、一つの重み付き点数で合格にしない。</li>
+<li>合格候補の中から点数・全工程時間・メモリを比較する。どれか一つを改善すると別が悪くなる候補は、優劣が一つに決まらない候補群として残す。</li>
+<li>共通の合格候補がない場合は、表示用、計測用、解析用などを別コピーにする。「全用途向けの一つの間引き原本」を無理に作らない。</li>
+<li>設定は調整用の建物で選ぶ。選んだ条件と合格基準を固定してから、未使用の建物で確かめる。</li>
+</ol>
+<p>この選択手順は<strong>提案段階</strong>。全出口の実験や、現場で設定が容易になったことの検証はまだない。卒研の成果としては、品質だけでなく、設定時間・試行回数・誤設定・利用者の選択理由も測る必要がある。</p>
+<h2>既存コードに接続できる設定</h2>
+<p>正本は別リポジトリの <code>src/reductions.py</code>、<code>src/csc.py</code>、<code>src/descriptors.py</code>。今回は読み取りのみ。既存実験の値は変更しない。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>設定</th>
+<th>意味</th>
+<th>現実装の注意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>voxel_size</code></td>
+<td>箱の一辺。座標と同じ単位</td>
+<td>同じ箱ごとに元の点を一つ選ぶ。PCL/Open3Dの重心方式とは同一ではない</td>
+</tr>
+<tr>
+<td><code>target_ratio</code></td>
+<td>減らす割合の目標。0.7は7割削減</td>
+<td>箱の幅を探索するので厳密な点数目標ではない。実際の残存点数を確認する</td>
+</tr>
+<tr>
+<td><code>alpha</code></td>
+<td>局所幾何とCSCの混ぜ方</td>
+<td>0はCSC、1は局所幾何。1でも均一間引きではない</td>
+</tr>
+<tr>
+<td><code>k</code></td>
+<td>元のXYZから特徴を計算するときの周囲の点数</td>
+<td>分類器側の近傍設定とは別。同じkでも密度によって物理範囲が変わる</td>
+</tr>
+<tr>
+<td><code>weights</code></td>
+<td>スコアを構成する特徴の重み</td>
+<td>寸法・意味上の境界を直接保証するものではない</td>
+</tr>
+<tr>
+<td><code>structure_scales</code></td>
+<td>構造グループの相対的な倍率</td>
+<td>一律倍率は正規化でほぼ打ち消される。構造間の比を変える</td>
+</tr>
+<tr>
+<td><code>rng_seed</code></td>
+<td>同条件での再現用の乱数</td>
+<td>単一seedの比較だけで頑健性を証明しない</td>
+</tr>
+</tbody>
+</table></div>
+<p>特徴にも重複がある。現実装では <code>elongation</code> は <code>linearity</code> と同じ計算、<code>normal_variation</code> と <code>boundary_discontinuity</code> も同じ由来。柱の鉛直性はZが上向きという向きの情報に依存する。重みの探索を始める前に、重複と座標の向きを確認する。</p>
+<p>重要な限界：同じ箱から一つしか残さない方式では、同じ箱内の細い部材や別の面を<strong>重みだけで両方保護する保証はない</strong>。守る領域、場所別のセル幅、最低点数の制約は現状未実装。同一平面上にある別部材の意味の違いも、幾何だけでは検出できない。</p>
+<h3>幅の候補を作れる、限定的な根拠</h3>
+<p>一辺sの同じ立方体にある二点の距離は√3s以下。全占有セルから元の点を一つ選び、別の間引きや外れ値除去を追加しない方式なら、元の各点から残存点までの片方向最近傍距離も√3s以下になる。</p>
+<p>そこで「元点群に追加する位置ずれの上限」をεとすると、s≤ε/√3は十分条件になる。この幾何学的な条件から、その1/4・1/2・1倍のセル幅を<strong>比較用の候補としてこちらで定義</strong>した。分割倍率は最適値ではない。元の観測誤差、法線、曲面、細部、接続、分類、解析の精度は保証しない。</p>
+<p>たとえばε=2mm、座標の単位がmなら、幅の候補は約0.000289／0.000577／0.001155m。この数値は<strong>入力例であって、ArCHや3DITAに推奨した設定ではない</strong>。点群の単位が不明なら物理幅を出さない。</p>
+<h3>試す順序</h3>
+<ul>
+<li>まず幅または削減割合を比較する。幅の合格基準が未定なら50/70/90%を探索候補として使う。</li>
+<li>元のまま・均一間引き・CSCを、同じ元データ・属性・箱幅で比較する。各条件の点数を確認する。</li>
+<li>合格候補があれば、混ぜ方0/0.5/1を調べ、その後で近傍点数20/30/60を調べる。全直積を一度に回さない。</li>
+<li>これらの候補値は感度確認用。文献が示した建築共通の最適値でも、用途別に実証したプリセットでもない。</li>
+<li>計算地点のみの間引きと原本保存は、この点群本体の試行ルートから分ける。</li>
+</ul>
+<h2>先行研究から見た、この研究の位置</h2>
+<p>SampleNetは下流用途を考慮する学習型方式、LTA-PCSは用途別正解を要求しない学習型方式、MICASは用途間・入力条件への適応を扱う。したがって「用途によって必要情報が違う」ことと、「共通の方式も研究できる」ことは矛盾しない。いずれも、本研究のXYZのみのCSCが建築のすべての出口で優れる根拠にはならない。<a href="https://arxiv.org/abs/1912.03663">S06: SampleNet</a>、<a href="https://openaccess.thecvf.com/content/CVPR2024/html/Liu_LTA-PCS_Learnable_Task-Agnostic_Point_Cloud_Sampling_CVPR_2024_paper.html">S07: LTA-PCS</a>、<a href="https://arxiv.org/abs/2411.16773">S08: MICAS</a></p>
+<p>本研究で差別化を検証する案は、建築の実務で使う要求を、軽量な既存の間引き設定と出口別の合格判定につなぐこと。学習型最先端方式を上回る新手法だという主張ではない。「設定を容易にする」という利用者側の効果も、今後測定する。</p>
+<h2>確認済みの実験と、まだ実証していない出口</h2>
+<p>確認済みなのは、既存の均一間引きとCSCの比較における保持率、元点群との距離、CPU簡易分類、削減後法線の再推定、別データ3DITAでの距離等。設定ガイドの候補や複数用途の合格判定を実験した結果ではない。今回、実験値の改変・再調整はしていない。</p>
+<ul>
+<li>ArCHでは、細長い形の点の保持と、全体の距離誤差改善は一致しなかった。</li>
+<li>簡易分類では両方法の差は小さく、一貫した改善はなかった。同等性や実用性の証明ではない。</li>
+<li>3DITAは距離と保持率の外部確認で、メッシュ化、計測、物理解析の検証ではない。</li>
+</ul>
+<p>数値と条件の詳細はゼミ進捗報告（公開版未収録）に残す。広い用途を<strong>調査の対象</strong>にすることと、全用途を<strong>実験で確認済み</strong>にすることを混同しない。</p>
+<h2>次の実証を、研究の目的に合わせる</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>段階</th>
+<th>行うこと</th>
+<th>決める／測ること</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 要求の具体化</td>
+<td>各用途の利用者・実際の利用場面を選ぶ</td>
+<td>必ず残す情報、許容誤差、必要な属性、計算予算</td>
+</tr>
+<tr>
+<td>2 代表用途の試行</td>
+<td>既存の距離・分類を足場に、復元／表示／位置合わせなどの評価器を選ぶ</td>
+<td>セル幅、優先度、近傍の変更が出口の成績をどう変えるか</td>
+</tr>
+<tr>
+<td>3 複数用途の判断</td>
+<td>単用途で選ぶ設定と、条件を同時に満たす設定／別コピーを比較</td>
+<td>品質条件の充足、実際の点数、全工程時間、相反する条件</td>
+</tr>
+<tr>
+<td>4 容易さの評価</td>
+<td>ガイド有無で設定作業を比較する</td>
+<td>選択時間、試行回数、誤設定、選択理由、使いやすさ</td>
+</tr>
+<tr>
+<td>5 未使用建物</td>
+<td>候補と基準を凍結して外部確認</td>
+<td>他の建物・密度・単位でも成立する範囲と破綻条件</td>
+</tr>
+</tbody>
+</table></div>
+<p>全出口に同じ数の実験を課さない。代表例を選ぶことは、研究全体をその用途に縮小することではない。解析については入力・評価基準が揃えば段階2以降に組み込めるが、現時点では解析精度未検証。</p>
+<h2>教授に相談する、研究の判断点</h2>
+<ol>
+<li>「用途を広く調査して、複数用途の設定を選びやすくする研究として、代表実験には何を組み合わせると、条件の違いや衝突を十分に示せるでしょうか。」</li>
+<li>「研究室の実際の用途では、何を必ず残し、どの成績がどの程度なら使えると判断しますか。利用者と合格条件を決めるためのデータや比較例はありますか。」</li>
+<li>「設定の容易さも成果にしたいと考えています。品質に加えて設定時間・試行回数・誤設定を測る設計で、卒研としてどの程度まで実証すべきでしょうか。」</li>
+<li>解析に接続する場合：「解析の方式、材料・境界条件、基準結果が揃う事例はありますか。点群削減と解析メッシュの影響を分けて比較したいです。」</li>
+<li>未使用の実測建築・正解情報・取得条件について、利用可能性と研究／発表の許可範囲を確認する。</li>
+</ol>
+<p>質問案であり、教授の回答や承認済みの範囲ではない。本人以外の発言内容を推測して補わない。</p>
+<h2>資料一覧：どこまで確認したか</h2>
+<p>完全な機械可読書誌は用途カタログJSON（公開版未収録）。各URLはガイドからも参照できる。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>資料・年</th>
+<th>読めた範囲／主に使ったこと</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S01</td>
+<td><a href="https://pointclouds.org/documentation/tutorials/voxel_grid.html">PCL VoxelGrid</a>、年記載なし</td>
+<td>公式本文。代表点を重心にする方式との違い</td>
+</tr>
+<tr>
+<td>S02</td>
+<td><a href="https://www.cg.tuwien.ac.at/research/publications/2021/SCHUETZ-2021-DISS/">Schütz, Interactive Exploration of Point Clouds</a>、2021</td>
+<td>著者・所属機関の要旨。表示の詳細度調整。107頁全文未読</td>
+</tr>
+<tr>
+<td>S03</td>
+<td><a href="https://www.open3d.org/docs/0.19.0/tutorial/geometry/surface_reconstruction.html">Open3D Surface reconstruction</a>、0.19.0</td>
+<td>公式の関連本文。法線・復元方式・復元解像度の区別</td>
+</tr>
+<tr>
+<td>S04</td>
+<td><a href="https://www.open3d.org/docs/release/tutorial/pipelines/global_registration.html">Open3D Global registration</a></td>
+<td>公式の関連本文。粗い初期化と密な精密化。例の倍率は普遍値にしない</td>
+</tr>
+<tr>
+<td>S05</td>
+<td><a href="https://www.open3d.org/docs/release/tutorial/t_pipelines/t_icp_registration.html">Open3D Multi-Scale ICP</a></td>
+<td>公式の関連本文。段階別の幅と対応条件</td>
+</tr>
+<tr>
+<td>S06</td>
+<td><a href="https://arxiv.org/abs/1912.03663">SampleNet</a>、CVPR 2020</td>
+<td>著者公開要旨。全文未読。用途依存方式の先行例</td>
+</tr>
+<tr>
+<td>S07</td>
+<td><a href="https://openaccess.thecvf.com/content/CVPR2024/html/Liu_LTA-PCS_Learnable_Task-Agnostic_Point_Cloud_Sampling_CVPR_2024_paper.html">LTA-PCS</a>、CVPR 2024</td>
+<td>出版社要旨・PDFの検索取得箇所。直接PDF取得失敗。用途非依存の学習型例</td>
+</tr>
+<tr>
+<td>S08</td>
+<td><a href="https://arxiv.org/abs/2411.16773">MICAS</a>、CVPR 2025（初稿2024）</td>
+<td>著者要旨・関連研究の検索取得箇所。全実験表未確認。用途間／入力条件への適応</td>
+</tr>
+<tr>
+<td>S09</td>
+<td><a href="https://isprs-annals.copernicus.org/articles/X-1-W1-2023/239/2023/">EEI-Net</a>、2023</td>
+<td>出版社要旨。全文未読。建築部位の境界・局所近傍の課題</td>
+</tr>
+<tr>
+<td>S10</td>
+<td><a href="https://isprs-annals.copernicus.org/articles/II-3/181/2014/isprsannals-II-3-181-2014.html">Weinmann et al.</a>、2014</td>
+<td>出版社要旨。PDF再取得失敗。近傍・特徴の選択</td>
+</tr>
+<tr>
+<td>S11</td>
+<td><a href="https://isprs-archives.copernicus.org/articles/XLVI-5-W1-2022/59/2022/">De Geyter et al.</a>、2022</td>
+<td>出版社要旨。PDF再取得失敗。BIMと分類用正解の関係</td>
+</tr>
+<tr>
+<td>S12</td>
+<td><a href="https://www.mdpi.com/2072-4292/16/9/1630">Pepe et al., From Point Cloud to BIM</a>、2024</td>
+<td>出版社検索取得の要旨・導入・開口事例。直接本文取得失敗。閾値による簡略化→復元→モデル化</td>
+</tr>
+<tr>
+<td>S13</td>
+<td><a href="https://historicengland.org.uk/images-books/publications/3d-laser-scanning-heritage/">Historic Englandガイド第3版</a>、2018</td>
+<td>公式紹介・目次・PDF冒頭。119頁全文／詳細の保存仕様未確認</td>
+</tr>
+<tr>
+<td>S14</td>
+<td><a href="https://amsacta.unibo.it/id/eprint/4246/">Castellazzi et al.</a>、2015</td>
+<td>著者投稿版の2–3節、JOK確認。組積造事例で厚み・体積・材料・解析要素を区別</td>
+</tr>
+<tr>
+<td>S15</td>
+<td><a href="https://doc.cfd.direct/openfoam/user-guide-v13/snappyhexmesh">OpenFOAM v13 §5.5</a>、2025版</td>
+<td>公式本文、JOK確認。ページに2026更新も併記。表面と体積セルの別工程</td>
+</tr>
+<tr>
+<td>S16</td>
+<td><a href="https://doc.comsol.com/6.4/doc/com.comsol.help.aco/aco_introduction.02.04.html">COMSOL Basics of Acoustics</a>、6.4</td>
+<td>公式本文の尺度説明等、JOK確認。ページの発行年は推定しない</td>
+</tr>
+<tr>
+<td>S17</td>
+<td><a href="https://www.nist.gov/publications/performance-evaluation-terrestrial-laser-scanners-review">Muralikrishnan / NISTレビュー</a>、2021</td>
+<td>公開本文の不確実性・分解能・フィルタ、JOK確認。点密度と測定精度を区別</td>
+</tr>
+<tr>
+<td>S18</td>
+<td><a href="https://arxiv.org/abs/1302.1183">Lague et al. / M3C2</a>、2013</td>
+<td>著者本文3.1.1–3.3等、JOK確認。coreとraw・粗さ・比較範囲・位置合わせ</td>
+</tr>
+<tr>
+<td>S19</td>
+<td><a href="https://www.geog.uni-heidelberg.de/en/3dgeo/projects-of-the-3dgeo-research-group/m3c2-ep">M3C2-EP著者資料</a>、<a href="https://portal.fis.tum.de/en/publications/m3c2-ep-pushing-the-limits-of-3d-topographic-point-cloud-change-d/">論文要旨</a>、2021</td>
+<td>著者プロジェクト本文＋要旨、JOK確認。論文全文未読。計測・位置合わせ誤差の伝播</td>
+</tr>
+</tbody>
+</table></div>
+<h2>既存資産の採用判断</h2>
+<ul>
+<li>既存の削減・特徴・CSCの入口をそのまま参照する。元リポジトリを変更しない。</li>
+<li>手元のQEMサンプルは三角形メッシュの削減。点群前処理とは別なので組み込まない。</li>
+<li>接続済みGitHubの対象sotsukenリポジトリでQEMの同名資産を検索したが結果なし。全リポジトリを検索済みという意味ではない。</li>
+<li>PCL／Open3Dは資料・候補として使う。別方式や重い依存を新規導入しない。</li>
+<li>SampleNet／LTA-PCS／MICASは比較の根拠として使い、今回のローカル試作には訓練や新しい依存を追加しない。建築点群での性能確認が別に必要なため。</li>
+</ul>
+<p>使用スキル：research collectで用途別資料の収集範囲と読めた範囲を明記し、search-firstで既存コードを優先した。設定ガイドは設計整理・実装計画・TDD・完了前検証を使用する。公開・外部送信、原データの変更、最適値の検証は行っていない。</p>
+<h2>今回の検証結果と、未確認の範囲</h2>
+<ul>
+<li>計算部は先に失敗するテストを書き、単位換算、用途の重複除去、不正値の拒否、原本／rawの別扱いを実装した。表示はmmの概数、保存値は座標単位の正確な値に分ける。</li>
+<li>Nodeの新規テストは10件成功、終了コード0。うちブラウザ検査はPC幅1440px・スマホ幅375pxで、複数選択、JSON保存、単位不明、不正入力時の保存停止、リセットを実際に操作した。外部通信0、ページエラー0、横方向のはみ出しなし。</li>
+<li>11用途をすべて選ぶ追加確認と、ゼミHTML→ガイドのリンクも両画面幅で成功。点群本体への候補は9選択肢だけに対応づけ、保存・変化検出のrawへ適用しない。</li>
+<li>Pythonの既存テスト27件は成功、終了コード0。今回変更した資料が既存の計算テストを壊していないことを確認した。既存の全実験を再実行した意味ではない。</li>
+<li>ガイドHTMLと生成元／カタログの一致、19出典のIDと用途からの参照、変更ファイルの余分な行末空白を確認した。</li>
+<li>JOKが担当したS14〜S19と計測・変化・物理解析・保存の主張を読み取り専用で照合。計測誤差の一表現を修正し、担当範囲の重大な不整合なし。他領域やガイド実装全体を独立レビューした意味ではない。</li>
+<li>原稿の補足と質問案を更新した。動画本編の7場面は保存済みの生成情報と同一で、既存の音声・MP4は作り直していない。</li>
+</ul>
+<p>未確認：全出口の実際の品質、候補値の最適性、未使用建物での汎用性、物理解析の結果、利用者の設定時間・試行回数・誤設定の改善。本文未取得／未読の資料の詳細も上の資料一覧に残した。</p>
+<p>本人・教授・利用者の判断が必要なのは、具体的な利用場面と合格条件、代表実験の組合せ、実測データの利用許可。ソフトの単位換算や保存動作の確認を本人へ丸投げしてはいない。</p></main></body></html>
