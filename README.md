@@ -14,4 +14,6 @@ Supabase公式クライアント 2.117.3（MIT）を同梱しています。ラ�
 
 窓扉の診断図 `assets/window-spatial-errors.png` は同じArCHの点群・色・クラスラベルと本研究の予測を用いた可視化で、CC BY-NC-SA 4.0条件を継承します。`window-error-breakdown.png`、`window-feature-distributions.png`、`window-ablation.png` は同データの独自集計図です。これら4図もCC BY-NC-SA 4.0で提供します。前の形状比較図とは凡例が異なり、診断図の正解ラベルはデータセットの注釈です。人手で再確認した実物の真値ではありません。
 
+RGB追加の比較図 `assets/rgb-quality-comparison.png` もArCHを用いた独自集計で、CC BY-NC-SA 4.0で提供します。既存4建物の検証結果であり、未使用建物での最終評価ではありません。
+
 生の点群データ、個人の作業パス、動画台本、非公開プロジェクトの履歴は収録していません。研究の成果・未検証事項はページ本文を参照してください。
