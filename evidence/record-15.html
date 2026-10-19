@@ -1,0 +1,125 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>動作確認.json｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>動作確認.json</h1><p class="note">保存済み資料の公開用コピーです。作成時の実験条件・記録として参照し、今回の新しい実験結果とは区別してください。</p><pre>{
+  &quot;checked_date&quot;: &quot;2026-10-12&quot;,
+  &quot;status&quot;: &quot;preparation_verified&quot;,
+  &quot;smoke_exit_code&quot;: 0,
+  &quot;quality_acceptance&quot;: &quot;not_evaluated&quot;,
+  &quot;script&quot;: &quot;scripts/prepare_exit_experiments.py&quot;,
+  &quot;script_sha256&quot;: &quot;a178302eb601c281d10a49f6be986f72d2279c4a0a5e53b9064a757d5c264dee&quot;,
+  &quot;full_evidence&quot;: &quot;data/experiment-preparation/2026-10-12-ready/verification.json&quot;,
+  &quot;full_evidence_sha256&quot;: &quot;b88fa3b981c894470f9286cd983efd35bafbb6d509d960f52d2c6a6b7dd4d59f&quot;,
+  &quot;packages&quot;: {
+    &quot;numpy&quot;: &quot;2.4.4&quot;,
+    &quot;scipy&quot;: &quot;1.17.1&quot;,
+    &quot;open3d&quot;: &quot;0.19.0&quot;,
+    &quot;scikit-learn&quot;: &quot;1.8.0&quot;,
+    &quot;joblib&quot;: &quot;1.5.3&quot;,
+    &quot;torch&quot;: &quot;2.11.0&quot;
+  },
+  &quot;smoke_elapsed_seconds&quot;: 1.1623959169955924,
+  &quot;checks&quot;: {
+    &quot;real_data_reduction&quot;: {
+      &quot;status&quot;: &quot;pass&quot;,
+      &quot;input_points&quot;: 6000,
+      &quot;retained_points&quot;: 1769,
+      &quot;actual_reduction&quot;: 0.7051666666666667,
+      &quot;scope&quot;: &quot;6000-point resample of an already-used 80000-point tile; not new held-out data&quot;
+    },
+    &quot;known_geometry_fixture&quot;: {
+      &quot;status&quot;: &quot;pass&quot;,
+      &quot;input_points&quot;: 5000
+    },
+    &quot;surface_reconstruction&quot;: {
+      &quot;status&quot;: &quot;pass&quot;,
+      &quot;vertices&quot;: 9490,
+      &quot;triangles&quot;: 18733,
+      &quot;scope&quot;: &quot;execution and file round-trip only; openings, coverage and accuracy not assessed&quot;
+    },
+    &quot;known_transform_registration&quot;: {
+      &quot;status&quot;: &quot;pass&quot;,
+      &quot;rmse&quot;: 1.549485298896988e-15,
+      &quot;max_transform_error&quot;: 2.7478019859472624e-15,
+      &quot;scope&quot;: &quot;small known transform of identical noise-free points; not independent scans&quot;
+    },
+    &quot;cached_classifier_inference&quot;: {
+      &quot;status&quot;: &quot;pass&quot;,
+      &quot;points&quot;: 512,
+      &quot;features&quot;: 13,
+      &quot;scope&quot;: &quot;cached-feature inference matches saved predictions; fresh-input feature pipeline not verified&quot;
+    }
+  },
+  &quot;outputs&quot;: {
+    &quot;count&quot;: 11,
+    &quot;total_bytes&quot;: 1585429,
+    &quot;all_checksums_verified&quot;: true,
+    &quot;integrity_check_method&quot;: &quot;Separate post-run validation reread all 11 saved artifacts, recomputed SHA-256, and compared file sizes and hashes with verification.json.&quot;
+  },
+  &quot;source_code_hashes_unchanged&quot;: true,
+  &quot;criteria_uses&quot;: 8,
+  &quot;all_thresholds_pending&quot;: true,
+  &quot;output_guards&quot;: {
+    &quot;outside_data&quot;: {
+      &quot;exit_code&quot;: 2,
+      &quot;expected_rejection&quot;: true
+    },
+    &quot;existing_output&quot;: {
+      &quot;exit_code&quot;: 1,
+      &quot;expected_rejection&quot;: true
+    }
+  },
+  &quot;other_checks&quot;: {
+    &quot;blender_cli_version&quot;: &quot;5.1.0&quot;,
+    &quot;blender_gui&quot;: &quot;not_checked&quot;,
+    &quot;new_dependencies_installed&quot;: false,
+    &quot;published&quot;: false
+  },
+  &quot;first_attempt&quot;: {
+    &quot;exit_code&quot;: 1,
+    &quot;cause&quot;: &quot;NumPy float32 was not JSON serializable&quot;,
+    &quot;repair&quot;: &quot;convert voxel width to Python float, rerun in new output directory&quot;
+  },
+  &quot;criteria_leaf_uses&quot;: 11,
+  &quot;criteria_sha256&quot;: &quot;77dc4c4e12b59189387329f7cb9968c3e66b0fc9e9fb60c735a9681133294e7e&quot;,
+  &quot;final_document_validation&quot;: {
+    &quot;checked_utc&quot;: &quot;2026-10-12T02:38:55.204449+00:00&quot;,
+    &quot;criteria_json_valid&quot;: true,
+    &quot;all_11_leaf_uses_draft&quot;: true,
+    &quot;all_numeric_thresholds_pending&quot;: true,
+    &quot;script_ast_valid&quot;: true,
+    &quot;local_document_links_checked&quot;: 31,
+    &quot;new_text_trailing_whitespace&quot;: false
+  },
+  &quot;criteria_history&quot;: [
+    {
+      &quot;version&quot;: 1,
+      &quot;sha256&quot;: &quot;97cc0559873ea1c522eae757ec4777279bdb1935f2cc9759f7055f3b40bd5f0b&quot;,
+      &quot;scope&quot;: &quot;previous preparation validation&quot;
+    },
+    {
+      &quot;version&quot;: 2,
+      &quot;sha256&quot;: &quot;77dc4c4e12b59189387329f7cb9968c3e66b0fc9e9fb60c735a9681133294e7e&quot;,
+      &quot;scope&quot;: &quot;evidence links and decision fields added; thresholds remain pending&quot;
+    }
+  ],
+  &quot;evidence_document_validation&quot;: {
+    &quot;source_records&quot;: 21,
+    &quot;leaf_uses_with_sources&quot;: 11,
+    &quot;local_links_and_anchors_checked&quot;: 31,
+    &quot;numeric_thresholds_adopted&quot;: false,
+    &quot;review&quot;: &quot;JOK read-only review: no blocking findings; one bibliographic title correction applied and verified&quot;,
+    &quot;scope&quot;: &quot;document and criteria validation only; unchanged smoke script was not rerun&quot;,
+    &quot;limitations&quot;: [
+      &quot;source reading depth varies and is recorded per source&quot;,
+      &quot;practical thresholds and sample sizes undecided&quot;,
+      &quot;HE numeric candidates need source recheck before adoption&quot;,
+      &quot;ISO full texts not obtained&quot;
+    ],
+    &quot;files_sha256&quot;: {
+      &quot;acceptance-criteria.json&quot;: &quot;77dc4c4e12b59189387329f7cb9968c3e66b0fc9e9fb60c735a9681133294e7e&quot;,
+      &quot;根拠台帳.json&quot;: &quot;9856eab2c69b6f6518060d9b61a1277d8e425cc0d59554de9eb5d3f686104391&quot;,
+      &quot;出典台帳.md&quot;: &quot;5dc9ce543a261500d59f9863312dac7d91a6fd0942825986ea297ac9d3092d16&quot;,
+      &quot;ゴール設定と合格基準の根拠.md&quot;: &quot;c12d97d18f5d86dd6fb0f6c45e7872ddad7d96fd7bd9b5f8cd66777b5b8baab8&quot;,
+      &quot;用途別基準と実験準備.md&quot;: &quot;34c4db3e27e4a82e197f40316ec37e0050e2da536ec1d892c1861ee784baf3ee&quot;
+    }
+  }
+}
+</pre></main></body></html>

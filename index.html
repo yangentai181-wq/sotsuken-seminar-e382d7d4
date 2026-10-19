@@ -1185,9 +1185,22 @@
       <p class="v-eyebrow">研究管理マスタ <span>建築点群リサーチ</span></p>
       <h1>点群データの効果的なリダクション手法についての研究</h1>
       <p class="v-lead">研究課題、進捗、比較実験、論文執筆までをこのページで管理します。</p>
-      <nav class="v-nav" aria-label="研究管理の案内"><a href="#seminar-summary">研究概要</a><a href="#research-four-steps">4段階の現在地</a><a href="#research-roadmap">ロードマップ・進捗</a><a href="#seminar-comparison">実測比較</a><a href="#visual-flow">全体の流れ</a><a href="#visual-question">研究の焦点</a><a href="#visual-tests">比べ方</a><a href="#ai-optimization">AIで重みを調整</a><a href="#visual-exits">8系統・11用途</a><a href="#visual-reference">詳しい資料</a></nav>
+      <nav class="v-nav" aria-label="研究管理の案内"><a href="#weekly-progress">今週の進捗</a><a href="#seminar-summary">研究概要</a><a href="#research-four-steps">4段階の現在地</a><a href="#research-roadmap">ロードマップ・進捗</a><a href="#seminar-comparison">実測比較</a><a href="#visual-flow">全体の流れ</a><a href="#visual-question">研究の焦点</a><a href="#visual-tests">比べ方</a><a href="#ai-optimization">AIで重みを調整</a><a href="#visual-exits">8系統・11用途</a><a href="#visual-reference">詳しい資料</a></nav>
     </header>
     <main>
+      <section class="v-wrap v-section" id="weekly-progress" aria-labelledby="weekly-progress-title">
+        <div class="v-heading"><h2 id="weekly-progress-title">今週の進捗</h2><p>2026年10月19日 ゼミ報告 · 10月12日 11時ごろ〜10月19日</p></div>
+        <div class="weekly-lead"><p class="v-eyebrow">評価基準と、検証・記録の準備が進みました</p><h3>11用途の基準案を整理し、<br>小規模な実験環境と文献管理を整備。</h3><p>次は、利用場面に即した合格ラインと、最初に比較する用途を具体化します。</p></div>
+        <div class="status-grid weekly-grid">
+          <article class="seminar-card"><p class="status-state">01 · 評価基準</p><h3>8系統を11用途に分けて整理</h3><p>用途ごとに、残す情報・評価指標・独立した基準データ・未確定事項を記録しました。共通設定で群内の全用途を満たせるか、検証する方針も具体化しています。</p><p class="weekly-limit">到達点：基準案まで。数値の合格線と具体的な用途群は未確定です。</p><a href="#research-four-steps">進め方と現在地を見る →</a></article>
+          <article class="seminar-card"><p class="status-state">02 · 根拠資料</p><h3>21件を評価方法に対応づけ</h3><p>論文・公式資料の使える根拠、該当箇所、適用限界を整理しました。21資料×11用途の対応マップと、学術資料11件のやさしいダイジェストをHTMLにまとめました。</p><p class="weekly-limit">確認の深さは資料ごとに異なります。全21件の全文精読を示すものではありません。</p><a href="evidence/sources-21.html">根拠資料と対応マップを開く →</a><a href="evidence/sources-21.html#paper-digest">論文のダイジェストを読む →</a></article>
+          <article class="seminar-card"><p class="status-state">03 · 実験準備</p><h3>小標本で処理の動作を確認</h3><p>実測6,000点から均一間引き・CSCともに1,769点を出力。壁・開口・細い部材・柱の人工形状を準備し、面復元、正解の分かる位置合わせ、保存済み特徴での分類推論を確認しました。</p><p class="weekly-limit">到達点：小規模な動作確認。用途別の品質合格や、手法の優位性は未評価です。</p><a href="evidence/record-15.html">条件と動作確認の記録を読む →</a></article>
+          <article class="seminar-card"><p class="status-state">04 · 文献管理</p><h3>研究文献台帳をスプレッドシート化</h3><p>10月19日に既存ExcelをGoogleスプレッドシートへ移し、共有編集できる文献台帳を作成しました。移行時の42件（学術14件・公式28件）を保持し、今後は用途別タブで管理する方針を記録しました。</p><p class="weekly-limit">今回の根拠資料21件は転記待ちです。42件とは別の整理で、件数を合算しません。</p><a href="https://docs.google.com/spreadsheets/d/1LwDvM2xyXUYeaDjIChaddwMYdInrK-cGqJq40TbzEYA/edit" target="_blank" rel="noopener noreferrer">研究文献台帳を開く ↗</a></article>
+        </div>
+        <div class="seminar-next weekly-next"><h3>ゼミで相談したいこと</h3><ol><li>利用場面と、失われると困る部材・形状、許容できる誤差。</li><li>予備実験の約3用途と、卒論で詳しく扱う1用途の選び方。</li><li>品質・時間・容量の合格ラインを、何に基づいて固定するか。</li></ol></div>
+        <p class="v-note">研究の進捗は記録にある内容に限定しています。実験準備は10月12日の記録、資料の可視化と文献台帳の移行は10月19日の成果です。今回、新しい点群実験は実行していません。CSC＝周囲の形状を採点して、小区画ごとに残す点を選ぶ提案手法。</p>
+      </section>
+
       <section class="v-wrap v-section seminar-section" id="seminar-summary" aria-labelledby="seminar-summary-title">
         <div class="v-heading"><h2 id="seminar-summary-title">研究概要と次の作業</h2><p>進捗・準備記録の照合：2026年10月19日</p></div>
         <div class="seminar-grid">

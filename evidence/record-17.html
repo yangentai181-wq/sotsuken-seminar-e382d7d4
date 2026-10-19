@@ -1,0 +1,724 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>acceptance-criteria.json｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>acceptance-criteria.json</h1><p class="note">保存済み資料の公開用コピーです。作成時の実験条件・記録として参照し、今回の新しい実験結果とは区別してください。</p><pre>{
+  &quot;version&quot;: 2,
+  &quot;date&quot;: &quot;2026-10-12&quot;,
+  &quot;status&quot;: &quot;draft&quot;,
+  &quot;purpose&quot;: &quot;Define per-use requirements before grouping compatible uses and optimizing parameters.&quot;,
+  &quot;pending_value_semantics&quot;: &quot;null means undecided, never pass, zero, unlimited, or not applicable&quot;,
+  &quot;group_acceptance&quot;: &quot;Every mandatory requirement of every member use must pass under the same specified input and resource conditions.&quot;,
+  &quot;grouping_status&quot;: &quot;not_determined&quot;,
+  &quot;common&quot;: {
+    &quot;input_unit&quot;: &quot;must_be_verified&quot;,
+    &quot;coordinate_system&quot;: &quot;must_be_recorded&quot;,
+    &quot;original_data&quot;: &quot;preserve; reduce derived copies only&quot;,
+    &quot;evaluation_split&quot;: &quot;building-level; freeze criteria and grouping before final evaluation&quot;,
+    &quot;existing_arch_and_3dita_role&quot;: &quot;previously examined; not unseen final evaluation&quot;,
+    &quot;runtime_limit_seconds&quot;: null,
+    &quot;peak_memory_limit_bytes&quot;: null,
+    &quot;temporary_storage_limit_bytes&quot;: null,
+    &quot;quality_and_resource_aggregation&quot;: &quot;report tradeoffs; do not average away a failed use&quot;,
+    &quot;final_experiment_ready&quot;: false
+  },
+  &quot;reference_candidates&quot;: [
+    {
+      &quot;source&quot;: &quot;Historic England 2024, section 3.2.7, printed page 23&quot;,
+      &quot;url&quot;: &quot;https://historicengland.org.uk/images-books/publications/geospatial-survey-specifications-cultural-heritage/&quot;,
+      &quot;quantity&quot;: &quot;point spacing for laser capture&quot;,
+      &quot;values_mm&quot;: {
+        &quot;1:20&quot;: 2.5,
+        &quot;1:50&quot;: 5.0,
+        &quot;1:100&quot;: 15.0
+      },
+      &quot;adopted_as_acceptance_threshold&quot;: false,
+      &quot;restriction&quot;: &quot;Not a voxel width, dimension tolerance, or guarantee of reduced-cloud downstream quality.&quot;
+    }
+  ],
+  &quot;uses&quot;: [
+    {
+      &quot;id&quot;: &quot;classification&quot;,
+      &quot;name&quot;: &quot;部位分類&quot;,
+      &quot;status&quot;: &quot;draft&quot;,
+      &quot;metrics&quot;: [
+        &quot;per_class_iou&quot;,
+        &quot;critical_class_miss_rate&quot;,
+        &quot;mean_iou&quot;
+      ],
+      &quot;thresholds&quot;: {
+        &quot;minimum_iou_by_class&quot;: null,
+        &quot;maximum_miss_rate_by_critical_class&quot;: null,
+        &quot;maximum_mean_iou_drop_percentage_points&quot;: null
+      },
+      &quot;reference&quot;: &quot;same original-point truth labels, fixed class set and ignored-label policy&quot;,
+      &quot;sources&quot;: [
+        &quot;https://arxiv.org/abs/1704.03847&quot;,
+        &quot;https://archdataset.polito.it/help-us/&quot;
+      ],
+      &quot;available&quot;: &quot;trusted local Random Forest and cached 13-feature inputs; 512 predictions reproduced&quot;,
+      &quot;blocking_inputs&quot;: [
+        &quot;fresh-input feature extraction provenance&quot;,
+        &quot;critical classes and tolerances&quot;,
+        &quot;Other class policy&quot;,
+        &quot;independent evaluation buildings&quot;
+      ],
+      &quot;final_experiment_ready&quot;: false,
+      &quot;decision_record&quot;: {
+        &quot;target_task&quot;: null,
+        &quot;evaluation_data&quot;: null,
+        &quot;independent_reference&quot;: null,
+        &quot;metric_definition_and_unit&quot;: null,
+        &quot;threshold_basis&quot;: null,
+        &quot;decision_owner&quot;: null,
+        &quot;freeze_date&quot;: null,
+        &quot;unseen_validation_buildings&quot;: [],
+        &quot;evaluation_unit&quot;: null,
+        &quot;aggregation_rule&quot;: null,
+        &quot;measurement_uncertainty&quot;: null,
+        &quot;acceptance_decision_rule&quot;: null,
+        &quot;false_acceptance_rejection_risk&quot;: null,
+        &quot;confidence_level_and_rationale&quot;: null,
+        &quot;sample_size_and_rationale&quot;: null,
+        &quot;indeterminate_rule&quot;: null
+      },
+      &quot;evidence_ids&quot;: [
+        &quot;SEMANTIC3D&quot;,
+        &quot;ARCH&quot;
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;reconstruction&quot;,
+      &quot;name&quot;: &quot;メッシュ復元&quot;,
+      &quot;status&quot;: &quot;draft&quot;,
+      &quot;metrics&quot;: [
+        &quot;mesh_to_reference_distance&quot;,
+        &quot;reference_surface_coverage&quot;,
+        &quot;critical_part_missing&quot;,
+        &quot;false_opening_closure&quot;
+      ],
+      &quot;thresholds&quot;: {
+        &quot;distance_tolerance_m&quot;: null,
+        &quot;minimum_within_distance_fraction&quot;: null,
+        &quot;minimum_coverage_fraction&quot;: null,
+        &quot;critical_part_rules&quot;: null
+      },
+      &quot;reference&quot;: &quot;independent reference surface or dimensions; sample actual reconstructed mesh&quot;,
+      &quot;sources&quot;: [
+        &quot;https://vladlen.info/papers/tanks-and-temples.pdf&quot;
+      ],
+      &quot;available&quot;: &quot;known geometry, independent reference samples, Open3D Poisson execution verified&quot;,
+      &quot;blocking_inputs&quot;: [
+        &quot;quality evaluator&quot;,
+        &quot;distance and coverage thresholds&quot;,
+        &quot;opening masks and per-part checks&quot;
+      ],
+      &quot;final_experiment_ready&quot;: false,
+      &quot;decision_record&quot;: {
+        &quot;target_task&quot;: null,
+        &quot;evaluation_data&quot;: null,
+        &quot;independent_reference&quot;: null,
+        &quot;metric_definition_and_unit&quot;: null,
+        &quot;threshold_basis&quot;: null,
+        &quot;decision_owner&quot;: null,
+        &quot;freeze_date&quot;: null,
+        &quot;unseen_validation_buildings&quot;: [],
+        &quot;evaluation_unit&quot;: null,
+        &quot;aggregation_rule&quot;: null,
+        &quot;measurement_uncertainty&quot;: null,
+        &quot;acceptance_decision_rule&quot;: null,
+        &quot;false_acceptance_rejection_risk&quot;: null,
+        &quot;confidence_level_and_rationale&quot;: null,
+        &quot;sample_size_and_rationale&quot;: null,
+        &quot;indeterminate_rule&quot;: null
+      },
+      &quot;evidence_ids&quot;: [
+        &quot;TANKS2017&quot;
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;building_model&quot;,
+      &quot;name&quot;: &quot;建物モデル・図面&quot;,
+      &quot;status&quot;: &quot;draft&quot;,
+      &quot;metrics&quot;: [
+        &quot;independent_dimension_error&quot;,
+        &quot;missing_members&quot;,
+        &quot;manual_correction_time&quot;
+      ],
+      &quot;thresholds&quot;: {
+        &quot;dimension_tolerance_m&quot;: null,
+        &quot;missing_critical_members&quot;: null,
+        &quot;correction_time_limit_seconds&quot;: null
+      },
+      &quot;reference&quot;: &quot;independent measured dimensions, output scale and fixed modelling procedure&quot;,
+      &quot;sources&quot;: [
+        &quot;https://historicengland.org.uk/images-books/publications/geospatial-survey-specifications-cultural-heritage/&quot;
+      ],
+      &quot;available&quot;: &quot;known geometric dimensions; Blender CLI version verified&quot;,
+      &quot;blocking_inputs&quot;: [
+        &quot;real independent dimensions&quot;,
+        &quot;output scale&quot;,
+        &quot;modelling procedure&quot;,
+        &quot;BIM/IFC path if needed&quot;
+      ],
+      &quot;final_experiment_ready&quot;: false,
+      &quot;decision_record&quot;: {
+        &quot;target_task&quot;: null,
+        &quot;evaluation_data&quot;: null,
+        &quot;independent_reference&quot;: null,
+        &quot;metric_definition_and_unit&quot;: null,
+        &quot;threshold_basis&quot;: null,
+        &quot;decision_owner&quot;: null,
+        &quot;freeze_date&quot;: null,
+        &quot;unseen_validation_buildings&quot;: [],
+        &quot;evaluation_unit&quot;: null,
+        &quot;aggregation_rule&quot;: null,
+        &quot;measurement_uncertainty&quot;: null,
+        &quot;acceptance_decision_rule&quot;: null,
+        &quot;false_acceptance_rejection_risk&quot;: null,
+        &quot;confidence_level_and_rationale&quot;: null,
+        &quot;sample_size_and_rationale&quot;: null,
+        &quot;indeterminate_rule&quot;: null
+      },
+      &quot;evidence_ids&quot;: [
+        &quot;HE2024&quot;,
+        &quot;GSI2026&quot;
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;display&quot;,
+      &quot;name&quot;: &quot;表示・共有&quot;,
+      &quot;status&quot;: &quot;draft&quot;,
+      &quot;metrics&quot;: [
+        &quot;task_miss_rate&quot;,
+        &quot;first_display_seconds&quot;,
+        &quot;frame_rate&quot;,
+        &quot;peak_memory&quot;
+      ],
+      &quot;thresholds&quot;: {
+        &quot;maximum_task_miss_rate&quot;: null,
+        &quot;first_display_limit_seconds&quot;: null,
+        &quot;minimum_frame_rate&quot;: null
+      },
+      &quot;reference&quot;: &quot;specified device, viewport, camera distance, point budget and inspection tasks&quot;,
+      &quot;sources&quot;: [],
+      &quot;available&quot;: &quot;local XYZ-only PLY preview inputs&quot;,
+      &quot;blocking_inputs&quot;: [
+        &quot;viewer and LOD pipeline&quot;,
+        &quot;device and camera conditions&quot;,
+        &quot;task-dependent thresholds&quot;,
+        &quot;required color/attribute round-trip&quot;
+      ],
+      &quot;final_experiment_ready&quot;: false,
+      &quot;decision_record&quot;: {
+        &quot;target_task&quot;: null,
+        &quot;evaluation_data&quot;: null,
+        &quot;independent_reference&quot;: null,
+        &quot;metric_definition_and_unit&quot;: null,
+        &quot;threshold_basis&quot;: null,
+        &quot;decision_owner&quot;: null,
+        &quot;freeze_date&quot;: null,
+        &quot;unseen_validation_buildings&quot;: [],
+        &quot;evaluation_unit&quot;: null,
+        &quot;aggregation_rule&quot;: null,
+        &quot;measurement_uncertainty&quot;: null,
+        &quot;acceptance_decision_rule&quot;: null,
+        &quot;false_acceptance_rejection_risk&quot;: null,
+        &quot;confidence_level_and_rationale&quot;: null,
+        &quot;sample_size_and_rationale&quot;: null,
+        &quot;indeterminate_rule&quot;: null
+      },
+      &quot;evidence_ids&quot;: [
+        &quot;ISO9241&quot;,
+        &quot;POTREE2016&quot;
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;registration&quot;,
+      &quot;name&quot;: &quot;位置合わせ&quot;,
+      &quot;status&quot;: &quot;draft&quot;,
+      &quot;metrics&quot;: [
+        &quot;independent_translation_error&quot;,
+        &quot;independent_rotation_error&quot;,
+        &quot;success_rate&quot;,
+        &quot;total_seconds&quot;
+      ],
+      &quot;thresholds&quot;: {
+        &quot;translation_tolerance_m&quot;: null,
+        &quot;rotation_tolerance_degrees&quot;: null,
+        &quot;minimum_success_rate&quot;: null
+      },
+      &quot;reference&quot;: &quot;independent ground-truth transformation, not ICP internal residual alone&quot;,
+      &quot;sources&quot;: [
+        &quot;https://www.open3d.org/docs/0.19.0/tutorial/pipelines/icp_registration.html&quot;
+      ],
+      &quot;available&quot;: &quot;Open3D ICP and exact known-transform diagnostic pair&quot;,
+      &quot;blocking_inputs&quot;: [
+        &quot;independent scan pairs with overlap and noise&quot;,
+        &quot;ground-truth positions&quot;,
+        &quot;downstream-required tolerances&quot;
+      ],
+      &quot;final_experiment_ready&quot;: false,
+      &quot;decision_record&quot;: {
+        &quot;target_task&quot;: null,
+        &quot;evaluation_data&quot;: null,
+        &quot;independent_reference&quot;: null,
+        &quot;metric_definition_and_unit&quot;: null,
+        &quot;threshold_basis&quot;: null,
+        &quot;decision_owner&quot;: null,
+        &quot;freeze_date&quot;: null,
+        &quot;unseen_validation_buildings&quot;: [],
+        &quot;evaluation_unit&quot;: null,
+        &quot;aggregation_rule&quot;: null,
+        &quot;measurement_uncertainty&quot;: null,
+        &quot;acceptance_decision_rule&quot;: null,
+        &quot;false_acceptance_rejection_risk&quot;: null,
+        &quot;confidence_level_and_rationale&quot;: null,
+        &quot;sample_size_and_rationale&quot;: null,
+        &quot;indeterminate_rule&quot;: null
+      },
+      &quot;evidence_ids&quot;: [
+        &quot;MATCH2017&quot;,
+        &quot;GSI2026&quot;,
+        &quot;JCGM106&quot;
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;measurement_change&quot;,
+      &quot;name&quot;: &quot;計測・変化検出&quot;,
+      &quot;status&quot;: &quot;draft&quot;,
+      &quot;metrics&quot;: [
+        &quot;dimension_error&quot;,
+        &quot;detection_limit&quot;,
+        &quot;known_change_detection_rate&quot;,
+        &quot;false_positive_rate&quot;
+      ],
+      &quot;reference&quot;: &quot;known dimensional/change reference and acquisition/registration uncertainty&quot;,
+      &quot;sources&quot;: [
+        &quot;https://arxiv.org/abs/1302.1183&quot;,
+        &quot;https://www.nist.gov/publications/performance-evaluation-terrestrial-laser-scanners-review&quot;
+      ],
+      &quot;available&quot;: &quot;known dimensions; NumPy/SciPy&quot;,
+      &quot;blocking_inputs&quot;: [
+        &quot;measurement procedure&quot;,
+        &quot;M3C2 runtime for change detection&quot;,
+        &quot;known changed and unchanged regions&quot;,
+        &quot;uncertainty and thresholds&quot;
+      ],
+      &quot;final_experiment_ready&quot;: false,
+      &quot;decision_record&quot;: {
+        &quot;target_task&quot;: null,
+        &quot;evaluation_data&quot;: null,
+        &quot;independent_reference&quot;: null,
+        &quot;metric_definition_and_unit&quot;: null,
+        &quot;threshold_basis&quot;: null,
+        &quot;decision_owner&quot;: null,
+        &quot;freeze_date&quot;: null,
+        &quot;unseen_validation_buildings&quot;: [],
+        &quot;evaluation_unit&quot;: null,
+        &quot;aggregation_rule&quot;: null,
+        &quot;measurement_uncertainty&quot;: null,
+        &quot;acceptance_decision_rule&quot;: null,
+        &quot;false_acceptance_rejection_risk&quot;: null,
+        &quot;confidence_level_and_rationale&quot;: null,
+        &quot;sample_size_and_rationale&quot;: null,
+        &quot;indeterminate_rule&quot;: null
+      },
+      &quot;subuses&quot;: [
+        {
+          &quot;id&quot;: &quot;measurement&quot;,
+          &quot;name&quot;: &quot;寸法・施工状態の計測&quot;,
+          &quot;metrics&quot;: [
+            &quot;dimension_bias&quot;,
+            &quot;measurement_uncertainty&quot;
+          ],
+          &quot;thresholds&quot;: {
+            &quot;dimension_tolerance_m&quot;: null,
+            &quot;uncertainty_limit_m&quot;: null
+          },
+          &quot;required_inputs&quot;: [
+            &quot;independent reference dimensions&quot;,
+            &quot;instrument and registration uncertainty&quot;,
+            &quot;fixed dimension extraction procedure&quot;
+          ],
+          &quot;decision_owner&quot;: null,
+          &quot;status&quot;: &quot;draft&quot;,
+          &quot;evidence_ids&quot;: [
+            &quot;JCGM106&quot;,
+            &quot;GSI2026&quot;
+          ],
+          &quot;decision_record&quot;: {
+            &quot;target_task&quot;: null,
+            &quot;evaluation_data&quot;: null,
+            &quot;independent_reference&quot;: null,
+            &quot;metric_definition_and_unit&quot;: null,
+            &quot;threshold_basis&quot;: null,
+            &quot;decision_owner&quot;: null,
+            &quot;freeze_date&quot;: null,
+            &quot;unseen_validation_buildings&quot;: [],
+            &quot;evaluation_unit&quot;: null,
+            &quot;aggregation_rule&quot;: null,
+            &quot;measurement_uncertainty&quot;: null,
+            &quot;acceptance_decision_rule&quot;: null,
+            &quot;false_acceptance_rejection_risk&quot;: null,
+            &quot;confidence_level_and_rationale&quot;: null,
+            &quot;sample_size_and_rationale&quot;: null,
+            &quot;indeterminate_rule&quot;: null
+          }
+        },
+        {
+          &quot;id&quot;: &quot;change_detection&quot;,
+          &quot;name&quot;: &quot;変形・経年変化&quot;,
+          &quot;metrics&quot;: [
+            &quot;detection_limit&quot;,
+            &quot;known_change_detection_rate&quot;,
+            &quot;false_positive_rate&quot;
+          ],
+          &quot;thresholds&quot;: {
+            &quot;required_minimum_change_m&quot;: null,
+            &quot;minimum_detection_rate&quot;: null,
+            &quot;maximum_false_positive_rate&quot;: null
+          },
+          &quot;required_inputs&quot;: [
+            &quot;two-time-point clouds&quot;,
+            &quot;known changed and unchanged areas&quot;,
+            &quot;registration uncertainty&quot;,
+            &quot;core-point and raw-point sampling definitions&quot;
+          ],
+          &quot;decision_owner&quot;: null,
+          &quot;status&quot;: &quot;draft&quot;,
+          &quot;evidence_ids&quot;: [
+            &quot;M3C2&quot;,
+            &quot;JCGM106&quot;
+          ],
+          &quot;decision_record&quot;: {
+            &quot;target_task&quot;: null,
+            &quot;evaluation_data&quot;: null,
+            &quot;independent_reference&quot;: null,
+            &quot;metric_definition_and_unit&quot;: null,
+            &quot;threshold_basis&quot;: null,
+            &quot;decision_owner&quot;: null,
+            &quot;freeze_date&quot;: null,
+            &quot;unseen_validation_buildings&quot;: [],
+            &quot;evaluation_unit&quot;: null,
+            &quot;aggregation_rule&quot;: null,
+            &quot;measurement_uncertainty&quot;: null,
+            &quot;acceptance_decision_rule&quot;: null,
+            &quot;false_acceptance_rejection_risk&quot;: null,
+            &quot;confidence_level_and_rationale&quot;: null,
+            &quot;sample_size_and_rationale&quot;: null,
+            &quot;indeterminate_rule&quot;: null
+          }
+        }
+      ],
+      &quot;evidence_ids&quot;: [
+        &quot;JCGM106&quot;,
+        &quot;GSI2026&quot;,
+        &quot;M3C2&quot;
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;simulation&quot;,
+      &quot;name&quot;: &quot;物理解析&quot;,
+      &quot;status&quot;: &quot;draft&quot;,
+      &quot;subuses&quot;: [
+        {
+          &quot;id&quot;: &quot;structure&quot;,
+          &quot;name&quot;: &quot;構造・振動解析&quot;,
+          &quot;metrics&quot;: [
+            &quot;displacement_error&quot;,
+            &quot;natural_frequency_error&quot;,
+            &quot;mesh_convergence&quot;
+          ],
+          &quot;thresholds&quot;: {
+            &quot;displacement_tolerance_m&quot;: null,
+            &quot;natural_frequency_tolerance_hz&quot;: null,
+            &quot;mesh_convergence_tolerance&quot;: null
+          },
+          &quot;required_inputs&quot;: [
+            &quot;structural geometry and connectivity&quot;,
+            &quot;material properties&quot;,
+            &quot;loads and supports&quot;,
+            &quot;reference displacement/frequency&quot;
+          ],
+          &quot;decision_owner&quot;: null,
+          &quot;status&quot;: &quot;draft&quot;,
+          &quot;evidence_ids&quot;: [
+            &quot;NAFEMS&quot;
+          ],
+          &quot;decision_record&quot;: {
+            &quot;target_task&quot;: null,
+            &quot;evaluation_data&quot;: null,
+            &quot;independent_reference&quot;: null,
+            &quot;metric_definition_and_unit&quot;: null,
+            &quot;threshold_basis&quot;: null,
+            &quot;decision_owner&quot;: null,
+            &quot;freeze_date&quot;: null,
+            &quot;unseen_validation_buildings&quot;: [],
+            &quot;evaluation_unit&quot;: null,
+            &quot;aggregation_rule&quot;: null,
+            &quot;measurement_uncertainty&quot;: null,
+            &quot;acceptance_decision_rule&quot;: null,
+            &quot;false_acceptance_rejection_risk&quot;: null,
+            &quot;confidence_level_and_rationale&quot;: null,
+            &quot;sample_size_and_rationale&quot;: null,
+            &quot;indeterminate_rule&quot;: null
+          }
+        },
+        {
+          &quot;id&quot;: &quot;flow&quot;,
+          &quot;name&quot;: &quot;風・換気などの流体解析&quot;,
+          &quot;metrics&quot;: [
+            &quot;flow_rate_error&quot;,
+            &quot;pressure_error&quot;,
+            &quot;mesh_convergence&quot;
+          ],
+          &quot;thresholds&quot;: {
+            &quot;flow_rate_tolerance_m3_s&quot;: null,
+            &quot;pressure_tolerance_pa&quot;: null,
+            &quot;mesh_convergence_tolerance&quot;: null
+          },
+          &quot;required_inputs&quot;: [
+            &quot;openings and passages&quot;,
+            &quot;fluid model and properties&quot;,
+            &quot;inlet/outlet/wall conditions&quot;,
+            &quot;reference flow/pressure&quot;
+          ],
+          &quot;decision_owner&quot;: null,
+          &quot;status&quot;: &quot;draft&quot;,
+          &quot;evidence_ids&quot;: [
+            &quot;NASA&quot;
+          ],
+          &quot;decision_record&quot;: {
+            &quot;target_task&quot;: null,
+            &quot;evaluation_data&quot;: null,
+            &quot;independent_reference&quot;: null,
+            &quot;metric_definition_and_unit&quot;: null,
+            &quot;threshold_basis&quot;: null,
+            &quot;decision_owner&quot;: null,
+            &quot;freeze_date&quot;: null,
+            &quot;unseen_validation_buildings&quot;: [],
+            &quot;evaluation_unit&quot;: null,
+            &quot;aggregation_rule&quot;: null,
+            &quot;measurement_uncertainty&quot;: null,
+            &quot;acceptance_decision_rule&quot;: null,
+            &quot;false_acceptance_rejection_risk&quot;: null,
+            &quot;confidence_level_and_rationale&quot;: null,
+            &quot;sample_size_and_rationale&quot;: null,
+            &quot;indeterminate_rule&quot;: null
+          }
+        },
+        {
+          &quot;id&quot;: &quot;acoustics&quot;,
+          &quot;name&quot;: &quot;音響解析&quot;,
+          &quot;metrics&quot;: [
+            &quot;sound_pressure_error&quot;,
+            &quot;reverberation_time_error&quot;,
+            &quot;method_specific_numerical_convergence&quot;
+          ],
+          &quot;thresholds&quot;: {
+            &quot;sound_pressure_level_tolerance_db&quot;: null,
+            &quot;reverberation_time_tolerance_s&quot;: null,
+            &quot;method_specific_convergence_tolerance&quot;: null
+          },
+          &quot;required_inputs&quot;: [
+            &quot;room geometry&quot;,
+            &quot;frequency range and solver method&quot;,
+            &quot;sources and boundary material properties&quot;,
+            &quot;reference acoustics output&quot;,
+            &quot;numerical verification appropriate to wave-based or geometrical acoustics; not a universal finite-element mesh rule&quot;
+          ],
+          &quot;decision_owner&quot;: null,
+          &quot;status&quot;: &quot;draft&quot;,
+          &quot;evidence_ids&quot;: [
+            &quot;ISO3382A&quot;,
+            &quot;ISO3382B&quot;,
+            &quot;SAVIOJA2015&quot;
+          ],
+          &quot;decision_record&quot;: {
+            &quot;target_task&quot;: null,
+            &quot;evaluation_data&quot;: null,
+            &quot;independent_reference&quot;: null,
+            &quot;metric_definition_and_unit&quot;: null,
+            &quot;threshold_basis&quot;: null,
+            &quot;decision_owner&quot;: null,
+            &quot;freeze_date&quot;: null,
+            &quot;unseen_validation_buildings&quot;: [],
+            &quot;evaluation_unit&quot;: null,
+            &quot;aggregation_rule&quot;: null,
+            &quot;measurement_uncertainty&quot;: null,
+            &quot;acceptance_decision_rule&quot;: null,
+            &quot;false_acceptance_rejection_risk&quot;: null,
+            &quot;confidence_level_and_rationale&quot;: null,
+            &quot;sample_size_and_rationale&quot;: null,
+            &quot;indeterminate_rule&quot;: null
+          }
+        }
+      ],
+      &quot;metrics&quot;: [
+        &quot;application_specific_output_error&quot;,
+        &quot;mesh_convergence&quot;,
+        &quot;geometry_integrity&quot;
+      ],
+      &quot;reference&quot;: &quot;fixed materials, loads, boundary conditions, solver and converged reference mesh per physics task&quot;,
+      &quot;sources&quot;: [],
+      &quot;available&quot;: &quot;Open3D/Blender for preliminary geometry only&quot;,
+      &quot;blocking_inputs&quot;: [
+        &quot;selected physics task&quot;,
+        &quot;validated analysis model&quot;,
+        &quot;solver&quot;,
+        &quot;materials and boundary conditions&quot;,
+        &quot;reference output and tolerances&quot;
+      ],
+      &quot;final_experiment_ready&quot;: false,
+      &quot;decision_record&quot;: {
+        &quot;target_task&quot;: null,
+        &quot;evaluation_data&quot;: null,
+        &quot;independent_reference&quot;: null,
+        &quot;metric_definition_and_unit&quot;: null,
+        &quot;threshold_basis&quot;: null,
+        &quot;decision_owner&quot;: null,
+        &quot;freeze_date&quot;: null,
+        &quot;unseen_validation_buildings&quot;: [],
+        &quot;evaluation_unit&quot;: null,
+        &quot;aggregation_rule&quot;: null,
+        &quot;measurement_uncertainty&quot;: null,
+        &quot;acceptance_decision_rule&quot;: null,
+        &quot;false_acceptance_rejection_risk&quot;: null,
+        &quot;confidence_level_and_rationale&quot;: null,
+        &quot;sample_size_and_rationale&quot;: null,
+        &quot;indeterminate_rule&quot;: null
+      },
+      &quot;evidence_ids&quot;: [
+        &quot;NAFEMS&quot;,
+        &quot;NASA&quot;,
+        &quot;SAVIOJA2015&quot;
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;archive&quot;,
+      &quot;name&quot;: &quot;記録保存&quot;,
+      &quot;status&quot;: &quot;draft&quot;,
+      &quot;role&quot;: &quot;common operating requirement, not a lossy reduction destination&quot;,
+      &quot;metrics&quot;: [
+        &quot;original_integrity&quot;,
+        &quot;required_attribute_integrity&quot;,
+        &quot;provenance_completeness&quot;,
+        &quot;readback_success&quot;
+      ],
+      &quot;requirements&quot;: {
+        &quot;preserve_original&quot;: true,
+        &quot;required_attributes&quot;: null,
+        &quot;record_processing_parameters&quot;: true,
+        &quot;readback_required&quot;: true
+      },
+      &quot;reference&quot;: &quot;source checksums, schema and processing history&quot;,
+      &quot;sources&quot;: [],
+      &quot;available&quot;: &quot;NPZ fields, diagnostic PLY round-trip and output hashes&quot;,
+      &quot;blocking_inputs&quot;: [
+        &quot;per-use required attribute schema&quot;,
+        &quot;long-term storage and backup policy&quot;
+      ],
+      &quot;final_experiment_ready&quot;: false,
+      &quot;decision_record&quot;: {
+        &quot;target_task&quot;: null,
+        &quot;evaluation_data&quot;: null,
+        &quot;independent_reference&quot;: null,
+        &quot;metric_definition_and_unit&quot;: null,
+        &quot;threshold_basis&quot;: null,
+        &quot;decision_owner&quot;: null,
+        &quot;freeze_date&quot;: null,
+        &quot;unseen_validation_buildings&quot;: [],
+        &quot;evaluation_unit&quot;: null,
+        &quot;aggregation_rule&quot;: null,
+        &quot;measurement_uncertainty&quot;: null,
+        &quot;acceptance_decision_rule&quot;: null,
+        &quot;false_acceptance_rejection_risk&quot;: null,
+        &quot;confidence_level_and_rationale&quot;: null,
+        &quot;sample_size_and_rationale&quot;: null,
+        &quot;indeterminate_rule&quot;: null
+      },
+      &quot;evidence_ids&quot;: [
+        &quot;PREMIS3&quot;
+      ]
+    }
+  ],
+  &quot;criterion_record_required_fields&quot;: [
+    &quot;target_task&quot;,
+    &quot;evaluation_data&quot;,
+    &quot;independent_reference&quot;,
+    &quot;metric_definition_and_unit&quot;,
+    &quot;threshold&quot;,
+    &quot;threshold_basis&quot;,
+    &quot;decision_owner&quot;,
+    &quot;freeze_date&quot;,
+    &quot;unseen_validation_buildings&quot;,
+    &quot;evaluation_unit&quot;,
+    &quot;aggregation_rule&quot;,
+    &quot;measurement_uncertainty&quot;,
+    &quot;acceptance_decision_rule&quot;,
+    &quot;false_acceptance_rejection_risk&quot;,
+    &quot;confidence_level_and_rationale&quot;,
+    &quot;sample_size_and_rationale&quot;,
+    &quot;indeterminate_rule&quot;
+  ],
+  &quot;arch_label_schema&quot;: {
+    &quot;source_url&quot;: &quot;https://archdataset.polito.it/help-us/&quot;,
+    &quot;checked_date&quot;: &quot;2026-10-12&quot;,
+    &quot;local_definition&quot;: &quot;point-cloud-research/src/preprocess_arch.py:ARCH_LABELS&quot;,
+    &quot;id_to_name&quot;: {
+      &quot;0&quot;: &quot;Arch&quot;,
+      &quot;1&quot;: &quot;Column&quot;,
+      &quot;2&quot;: &quot;Moldings&quot;,
+      &quot;3&quot;: &quot;Floor&quot;,
+      &quot;4&quot;: &quot;Door/Window&quot;,
+      &quot;5&quot;: &quot;Wall&quot;,
+      &quot;6&quot;: &quot;Stairs&quot;,
+      &quot;7&quot;: &quot;Vault&quot;,
+      &quot;8&quot;: &quot;Roof&quot;,
+      &quot;9&quot;: &quot;Other&quot;
+    },
+    &quot;legacy_conflict&quot;: &quot;point-cloud-research/data/arch_class_mapping.json is not used&quot;,
+    &quot;label_10&quot;: &quot;Undefined in local preprocessing; excluded from existing training and scoring&quot;,
+    &quot;other_policy&quot;: {
+      &quot;official_guidance&quot;: &quot;recommend excluding Other from training and testing&quot;,
+      &quot;existing_cached_model&quot;: &quot;includes class 9; kept unchanged for inference smoke test&quot;,
+      &quot;new_experiment&quot;: &quot;undecided; freeze before experiment&quot;
+    }
+  },
+  &quot;subuse_policy&quot;: &quot;8 umbrella uses, 11 leaf uses; measurement/change and structure/flow/acoustics require separate inputs, thresholds and decisions. Only selected leaf uses enter a group.&quot;,
+  &quot;evidence_register&quot;: &quot;根拠台帳.json&quot;,
+  &quot;rationale_document&quot;: &quot;ゴール設定と合格基準の根拠.md&quot;,
+  &quot;research_goal_proposal&quot;: {
+    &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+    &quot;statement&quot;: &quot;用途の要求品質を維持できる軽量化の範囲と、共通設定を共有できる用途群を、設定選びに使っていない建物で検証する。&quot;,
+    &quot;claim_types&quot;: [
+      &quot;practical_requirement_satisfaction&quot;,
+      &quot;non_inferiority_to_unreduced_baseline&quot;,
+      &quot;comparison_to_uniform_baseline&quot;
+    ],
+    &quot;universal_superiority_required&quot;: false
+  },
+  &quot;decision_states&quot;: {
+    &quot;pass&quot;: &quot;Every mandatory requirement passes its predeclared decision rule within the stated scope.&quot;,
+    &quot;fail&quot;: &quot;A predeclared failure rule or mandatory integrity requirement is violated.&quot;,
+    &quot;indeterminate&quot;: &quot;Threshold, reference, uncertainty, or evidence is insufficient; never count as practical acceptance.&quot;
+  },
+  &quot;shared_evidence_ids&quot;: [
+    &quot;JCGM106&quot;,
+    &quot;LAKENS2018&quot;,
+    &quot;LAKENS2017&quot;,
+    &quot;MAZZOLARI2022&quot;,
+    &quot;LAKENS2022&quot;,
+    &quot;DEMSAR2006&quot;
+  ],
+  &quot;group_validation_proposal&quot;: {
+    &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+    &quot;criterion&quot;: &quot;nonempty joint feasible parameter set for every selected leaf use; pairwise compatibility is insufficient&quot;,
+    &quot;comparisons&quot;: [
+      &quot;equal retained point count&quot;,
+      &quot;equal required quality&quot;,
+      &quot;shared versus per-use parameters&quot;
+    ],
+    &quot;final_evaluation&quot;: &quot;freeze criteria, group and parameter selection before evaluating on unused buildings&quot;,
+    &quot;search_failure&quot;: &quot;not found in explored range; not a proof of nonexistence&quot;,
+    &quot;archive_role&quot;: &quot;common mandatory preservation requirement; not an objective for lossy original-data reduction&quot;
+  }
+}
+</pre></main></body></html>
