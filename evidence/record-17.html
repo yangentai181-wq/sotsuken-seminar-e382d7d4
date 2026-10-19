@@ -1,11 +1,11 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>acceptance-criteria.json｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>acceptance-criteria.json</h1><p class="note">保存済み資料の公開用コピーです。作成時の実験条件・記録として参照し、今回の新しい実験結果とは区別してください。</p><pre>{
-  &quot;version&quot;: 2,
-  &quot;date&quot;: &quot;2026-10-12&quot;,
+  &quot;version&quot;: 3,
+  &quot;date&quot;: &quot;2026-10-19&quot;,
   &quot;status&quot;: &quot;draft&quot;,
   &quot;purpose&quot;: &quot;Define per-use requirements before grouping compatible uses and optimizing parameters.&quot;,
   &quot;pending_value_semantics&quot;: &quot;null means undecided, never pass, zero, unlimited, or not applicable&quot;,
   &quot;group_acceptance&quot;: &quot;Every mandatory requirement of every member use must pass under the same specified input and resource conditions.&quot;,
-  &quot;grouping_status&quot;: &quot;not_determined&quot;,
+  &quot;grouping_status&quot;: &quot;four_groups_proposed_not_validated&quot;,
   &quot;common&quot;: {
     &quot;input_unit&quot;: &quot;must_be_verified&quot;,
     &quot;coordinate_system&quot;: &quot;must_be_recorded&quot;,
@@ -16,7 +16,30 @@
     &quot;peak_memory_limit_bytes&quot;: null,
     &quot;temporary_storage_limit_bytes&quot;: null,
     &quot;quality_and_resource_aggregation&quot;: &quot;report tradeoffs; do not average away a failed use&quot;,
-    &quot;final_experiment_ready&quot;: false
+    &quot;final_experiment_ready&quot;: false,
+    &quot;provisional_resource_limits&quot;: {
+      &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+      &quot;input_points_max&quot;: 1000000,
+      &quot;input_tiles&quot;: 1,
+      &quot;concurrent_jobs&quot;: 1,
+      &quot;R15_runtime_seconds&quot;: 900,
+      &quot;R30_runtime_seconds&quot;: 1800,
+      &quot;runtime_scope&quot;: &quot;input read through features, reduction, write, downstream task and evaluation; convergence runs included&quot;,
+      &quot;installed_memory_bytes&quot;: 25769803776,
+      &quot;peak_process_tree_rss_bytes&quot;: 17179869184,
+      &quot;temporary_storage_bytes&quot;: 4294967296,
+      &quot;final_generated_storage_bytes&quot;: 1073741824,
+      &quot;reduced_cloud_file_size_ratio_max&quot;: 0.52,
+      &quot;deletion_fraction_candidates&quot;: [
+        0.5,
+        0.7,
+        0.9
+      ],
+      &quot;actual_retention_fraction_required&quot;: true,
+      &quot;basis&quot;: &quot;Operational proposal: 4h/16 trials; reserve 8GiB of measured 24GiB; 16 trials x 1GiB final; 50% retention with existing search tolerance +/-2pp. No measured runtime claim.&quot;,
+      &quot;source_originals&quot;: &quot;preserve outside generated-file budget&quot;,
+      &quot;hardware_scope&quot;: &quot;current 24GiB-memory machine; no other device guarantee&quot;
+    }
   },
   &quot;reference_candidates&quot;: [
     {
@@ -81,7 +104,67 @@
       &quot;evidence_ids&quot;: [
         &quot;SEMANTIC3D&quot;,
         &quot;ARCH&quot;
-      ]
+      ],
+      &quot;provisional_group&quot;: &quot;G3&quot;,
+      &quot;provisional_thresholds&quot;: {
+        &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+        &quot;basis_type&quot;: &quot;research_design_assumption&quot;,
+        &quot;source_ids_for_method_not_numeric_threshold&quot;: [
+          &quot;S43&quot;,
+          &quot;S44&quot;
+        ],
+        &quot;resource_profile&quot;: &quot;R15&quot;,
+        &quot;values&quot;: {
+          &quot;minimum_mean_iou&quot;: 0.7,
+          &quot;critical_classes&quot;: [
+            1,
+            4
+          ],
+          &quot;critical_classes_finalized&quot;: false,
+          &quot;minimum_critical_class_iou&quot;: 0.7,
+          &quot;minimum_critical_class_recall&quot;: 0.9,
+          &quot;maximum_mean_iou_drop_pp&quot;: 2,
+          &quot;maximum_critical_iou_drop_pp&quot;: 2,
+          &quot;maximum_critical_recall_drop_pp&quot;: 2,
+          &quot;maximum_critical_instance_geometric_disappearances&quot;: 0,
+          &quot;maximum_critical_instance_total_classification_misses&quot;: 0,
+          &quot;instance_metrics_require_instance_ids&quot;: true,
+          &quot;nearest_prediction_transfer_limit_m&quot;: 0.05,
+          &quot;class_ids&quot;: [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          &quot;ignore_class_ids&quot;: [
+            9
+          ],
+          &quot;no_prediction&quot;: &quot;count as FN of ground-truth class; no tenth class in mIoU&quot;,
+          &quot;undefined_metrics&quot;: &quot;IoU N/A only when TP+FP+FN=0; recall N/A only when TP+FN=0&quot;,
+          &quot;sensitivity_mean_iou&quot;: [
+            0.6,
+            0.7,
+            0.8
+          ],
+          &quot;sensitivity_critical_recall&quot;: [
+            0.85,
+            0.9,
+            0.95
+          ],
+          &quot;sensitivity_drop_pp&quot;: [
+            1,
+            2,
+            5
+          ]
+        },
+        &quot;judgment&quot;: &quot;not_evaluated&quot;,
+        &quot;scope_and_interpretation&quot;: &quot;see proposal_document; missing independent reference, labels or applicable conditions means indeterminate&quot;
+      }
     },
     {
       &quot;id&quot;: &quot;reconstruction&quot;,
@@ -130,7 +213,26 @@
       },
       &quot;evidence_ids&quot;: [
         &quot;TANKS2017&quot;
-      ]
+      ],
+      &quot;provisional_group&quot;: &quot;G2&quot;,
+      &quot;provisional_thresholds&quot;: {
+        &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+        &quot;basis_type&quot;: &quot;research_design_assumption&quot;,
+        &quot;source_ids_for_method_not_numeric_threshold&quot;: [
+          &quot;S46&quot;
+        ],
+        &quot;resource_profile&quot;: &quot;R15&quot;,
+        &quot;values&quot;: {
+          &quot;surface_distance_tolerance_m&quot;: 0.01,
+          &quot;minimum_mesh_to_reference_fraction&quot;: 0.95,
+          &quot;minimum_reference_to_mesh_fraction&quot;: 0.95,
+          &quot;missing_critical_members_max&quot;: 0,
+          &quot;false_opening_closures_max&quot;: 0,
+          &quot;sample_actual_mesh_surface&quot;: true
+        },
+        &quot;judgment&quot;: &quot;not_evaluated&quot;,
+        &quot;scope_and_interpretation&quot;: &quot;see proposal_document; missing independent reference, labels or applicable conditions means indeterminate&quot;
+      }
     },
     {
       &quot;id&quot;: &quot;building_model&quot;,
@@ -179,7 +281,26 @@
       &quot;evidence_ids&quot;: [
         &quot;HE2024&quot;,
         &quot;GSI2026&quot;
-      ]
+      ],
+      &quot;provisional_group&quot;: &quot;G1&quot;,
+      &quot;provisional_thresholds&quot;: {
+        &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+        &quot;basis_type&quot;: &quot;research_design_assumption&quot;,
+        &quot;source_ids_for_method_not_numeric_threshold&quot;: [
+          &quot;S45&quot;,
+          &quot;S54&quot;
+        ],
+        &quot;resource_profile&quot;: &quot;R15&quot;,
+        &quot;values&quot;: {
+          &quot;all_critical_dimensions_abs_error_plus_U95_max_m&quot;: 0.01,
+          &quot;U95_max_m&quot;: 0.005,
+          &quot;missing_critical_members_max&quot;: 0,
+          &quot;manual_correction_seconds_max&quot;: 900,
+          &quot;manual_time_additional_to_compute&quot;: true
+        },
+        &quot;judgment&quot;: &quot;not_evaluated&quot;,
+        &quot;scope_and_interpretation&quot;: &quot;see proposal_document; missing independent reference, labels or applicable conditions means indeterminate&quot;
+      }
     },
     {
       &quot;id&quot;: &quot;display&quot;,
@@ -227,7 +348,27 @@
       &quot;evidence_ids&quot;: [
         &quot;ISO9241&quot;,
         &quot;POTREE2016&quot;
-      ]
+      ],
+      &quot;provisional_group&quot;: &quot;G4&quot;,
+      &quot;provisional_thresholds&quot;: {
+        &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+        &quot;basis_type&quot;: &quot;research_design_assumption&quot;,
+        &quot;source_ids_for_method_not_numeric_threshold&quot;: [
+          &quot;S51&quot;,
+          &quot;S53&quot;
+        ],
+        &quot;resource_profile&quot;: &quot;R15&quot;,
+        &quot;values&quot;: {
+          &quot;inspection_tasks&quot;: 20,
+          &quot;missed_tasks_max&quot;: 1,
+          &quot;missed_critical_tasks_max&quot;: 0,
+          &quot;cold_first_display_seconds_max&quot;: 10,
+          &quot;frame_rate_5th_percentile_min&quot;: 30,
+          &quot;fixed_camera_path_seconds&quot;: 60
+        },
+        &quot;judgment&quot;: &quot;not_evaluated&quot;,
+        &quot;scope_and_interpretation&quot;: &quot;see proposal_document; missing independent reference, labels or applicable conditions means indeterminate&quot;
+      }
     },
     {
       &quot;id&quot;: &quot;registration&quot;,
@@ -277,7 +418,27 @@
         &quot;MATCH2017&quot;,
         &quot;GSI2026&quot;,
         &quot;JCGM106&quot;
-      ]
+      ],
+      &quot;provisional_group&quot;: &quot;G1&quot;,
+      &quot;provisional_thresholds&quot;: {
+        &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+        &quot;basis_type&quot;: &quot;research_design_assumption&quot;,
+        &quot;source_ids_for_method_not_numeric_threshold&quot;: [
+          &quot;S47&quot;
+        ],
+        &quot;resource_profile&quot;: &quot;R15&quot;,
+        &quot;values&quot;: {
+          &quot;max_radius_m&quot;: 5,
+          &quot;translation_error_max_m&quot;: 0.005,
+          &quot;rotation_error_max_degrees&quot;: 0.05,
+          &quot;critical_location_displacement_max_m&quot;: 0.01,
+          &quot;trial_pairs&quot;: 20,
+          &quot;successful_pairs_min&quot;: 19,
+          &quot;independent_transform_required&quot;: true
+        },
+        &quot;judgment&quot;: &quot;not_evaluated&quot;,
+        &quot;scope_and_interpretation&quot;: &quot;see proposal_document; missing independent reference, labels or applicable conditions means indeterminate&quot;
+      }
     },
     {
       &quot;id&quot;: &quot;measurement_change&quot;,
@@ -360,6 +521,21 @@
             &quot;confidence_level_and_rationale&quot;: null,
             &quot;sample_size_and_rationale&quot;: null,
             &quot;indeterminate_rule&quot;: null
+          },
+          &quot;provisional_group&quot;: &quot;G1&quot;,
+          &quot;provisional_thresholds&quot;: {
+            &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+            &quot;basis_type&quot;: &quot;research_design_assumption&quot;,
+            &quot;source_ids_for_method_not_numeric_threshold&quot;: [
+              &quot;S54&quot;
+            ],
+            &quot;resource_profile&quot;: &quot;R15&quot;,
+            &quot;values&quot;: {
+              &quot;all_critical_dimensions_abs_error_plus_U95_max_m&quot;: 0.01,
+              &quot;U95_max_m&quot;: 0.005
+            },
+            &quot;judgment&quot;: &quot;not_evaluated&quot;,
+            &quot;scope_and_interpretation&quot;: &quot;see proposal_document; missing independent reference, labels or applicable conditions means indeterminate&quot;
           }
         },
         {
@@ -404,6 +580,24 @@
             &quot;confidence_level_and_rationale&quot;: null,
             &quot;sample_size_and_rationale&quot;: null,
             &quot;indeterminate_rule&quot;: null
+          },
+          &quot;provisional_group&quot;: &quot;G1&quot;,
+          &quot;provisional_thresholds&quot;: {
+            &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+            &quot;basis_type&quot;: &quot;research_design_assumption&quot;,
+            &quot;source_ids_for_method_not_numeric_threshold&quot;: [
+              &quot;S18&quot;
+            ],
+            &quot;resource_profile&quot;: &quot;R15&quot;,
+            &quot;values&quot;: {
+              &quot;known_change_m&quot;: 0.02,
+              &quot;all_evaluated_locations_detection_limit95_max_m&quot;: 0.01,
+              &quot;minimum_detection_fraction&quot;: 0.95,
+              &quot;maximum_false_positive_fraction&quot;: 0.05,
+              &quot;limit_exceeded&quot;: &quot;indeterminate, report fraction; do not remove from report&quot;
+            },
+            &quot;judgment&quot;: &quot;not_evaluated&quot;,
+            &quot;scope_and_interpretation&quot;: &quot;see proposal_document; missing independent reference, labels or applicable conditions means indeterminate&quot;
           }
         }
       ],
@@ -459,6 +653,30 @@
             &quot;confidence_level_and_rationale&quot;: null,
             &quot;sample_size_and_rationale&quot;: null,
             &quot;indeterminate_rule&quot;: null
+          },
+          &quot;provisional_group&quot;: &quot;G2&quot;,
+          &quot;provisional_thresholds&quot;: {
+            &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+            &quot;basis_type&quot;: &quot;research_design_assumption&quot;,
+            &quot;source_ids_for_method_not_numeric_threshold&quot;: [
+              &quot;S49&quot;
+            ],
+            &quot;resource_profile&quot;: &quot;R30&quot;,
+            &quot;values&quot;: {
+              &quot;relative_displacement_difference_max&quot;: 0.05,
+              &quot;relative_frequency_difference_max&quot;: 0.05,
+              &quot;mesh_levels&quot;: 3,
+              &quot;fine_level_relative_difference_max&quot;: 0.02,
+              &quot;critical_disconnections_or_false_connections_max&quot;: 0,
+              &quot;near_zero_abs_reference_bound_m&quot;: 0.002,
+              &quot;near_zero_abs_reference_bound_hz&quot;: 0.2,
+              &quot;near_zero_absolute_difference_max_m&quot;: 0.0001,
+              &quot;near_zero_absolute_difference_max_hz&quot;: 0.01,
+              &quot;near_zero_convergence_difference_max_m&quot;: 4e-05,
+              &quot;near_zero_convergence_difference_max_hz&quot;: 0.004
+            },
+            &quot;judgment&quot;: &quot;not_evaluated&quot;,
+            &quot;scope_and_interpretation&quot;: &quot;see proposal_document; missing independent reference, labels or applicable conditions means indeterminate&quot;
           }
         },
         {
@@ -502,6 +720,30 @@
             &quot;confidence_level_and_rationale&quot;: null,
             &quot;sample_size_and_rationale&quot;: null,
             &quot;indeterminate_rule&quot;: null
+          },
+          &quot;provisional_group&quot;: &quot;G2&quot;,
+          &quot;provisional_thresholds&quot;: {
+            &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+            &quot;basis_type&quot;: &quot;research_design_assumption&quot;,
+            &quot;source_ids_for_method_not_numeric_threshold&quot;: [
+              &quot;S48&quot;
+            ],
+            &quot;resource_profile&quot;: &quot;R30&quot;,
+            &quot;values&quot;: {
+              &quot;relative_flow_difference_max&quot;: 0.05,
+              &quot;relative_pressure_difference_max&quot;: 0.05,
+              &quot;grid_levels&quot;: 3,
+              &quot;fine_level_relative_difference_max&quot;: 0.02,
+              &quot;critical_closed_or_false_passages_max&quot;: 0,
+              &quot;near_zero_abs_reference_bound_m3_s&quot;: 0.002,
+              &quot;near_zero_abs_reference_bound_pa&quot;: 2,
+              &quot;near_zero_absolute_difference_max_m3_s&quot;: 0.0001,
+              &quot;near_zero_absolute_difference_max_pa&quot;: 0.1,
+              &quot;near_zero_convergence_difference_max_m3_s&quot;: 4e-05,
+              &quot;near_zero_convergence_difference_max_pa&quot;: 0.04
+            },
+            &quot;judgment&quot;: &quot;not_evaluated&quot;,
+            &quot;scope_and_interpretation&quot;: &quot;see proposal_document; missing independent reference, labels or applicable conditions means indeterminate&quot;
           }
         },
         {
@@ -548,6 +790,38 @@
             &quot;confidence_level_and_rationale&quot;: null,
             &quot;sample_size_and_rationale&quot;: null,
             &quot;indeterminate_rule&quot;: null
+          },
+          &quot;provisional_group&quot;: &quot;G2&quot;,
+          &quot;provisional_thresholds&quot;: {
+            &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+            &quot;basis_type&quot;: &quot;research_design_assumption&quot;,
+            &quot;source_ids_for_method_not_numeric_threshold&quot;: [
+              &quot;S50&quot;
+            ],
+            &quot;resource_profile&quot;: &quot;R30&quot;,
+            &quot;values&quot;: {
+              &quot;method&quot;: &quot;geometrical_acoustics_only&quot;,
+              &quot;minimum_effective_surface_or_opening_dimension_m&quot;: 1,
+              &quot;third_octave_centers_hz&quot;: [
+                4000,
+                8000
+              ],
+              &quot;minimum_dimension_to_wavelength_ratio&quot;: 10,
+              &quot;no_applicable_band&quot;: &quot;inapplicable&quot;,
+              &quot;sound_level_abs_difference_max_db&quot;: 1,
+              &quot;reverberation_time_relative_difference_max&quot;: 0.05,
+              &quot;rays_per_level&quot;: [
+                10000,
+                40000,
+                160000
+              ],
+              &quot;random_seeds_count&quot;: 3,
+              &quot;fine_level_sound_level_abs_difference_max_db&quot;: 0.5,
+              &quot;fine_level_reverb_relative_difference_max&quot;: 0.02,
+              &quot;runtime_includes_all_levels_and_seeds&quot;: true
+            },
+            &quot;judgment&quot;: &quot;not_evaluated&quot;,
+            &quot;scope_and_interpretation&quot;: &quot;see proposal_document; missing independent reference, labels or applicable conditions means indeterminate&quot;
           }
         }
       ],
@@ -636,7 +910,25 @@
       },
       &quot;evidence_ids&quot;: [
         &quot;PREMIS3&quot;
-      ]
+      ],
+      &quot;provisional_group&quot;: &quot;cross_cutting&quot;,
+      &quot;provisional_thresholds&quot;: {
+        &quot;status&quot;: &quot;proposed_not_frozen&quot;,
+        &quot;basis_type&quot;: &quot;research_design_assumption&quot;,
+        &quot;source_ids_for_method_not_numeric_threshold&quot;: [
+          &quot;S52&quot;
+        ],
+        &quot;resource_profile&quot;: &quot;R15&quot;,
+        &quot;values&quot;: {
+          &quot;original_hash_match_fraction&quot;: 1,
+          &quot;derived_roundtrip_success_fraction&quot;: 1,
+          &quot;mandatory_metadata_present&quot;: 10,
+          &quot;mandatory_metadata_total&quot;: 10,
+          &quot;original_replacement_allowed&quot;: false
+        },
+        &quot;judgment&quot;: &quot;not_evaluated&quot;,
+        &quot;scope_and_interpretation&quot;: &quot;see proposal_document; missing independent reference, labels or applicable conditions means indeterminate&quot;
+      }
     }
   ],
   &quot;criterion_record_required_fields&quot;: [
@@ -719,6 +1011,63 @@
     &quot;final_evaluation&quot;: &quot;freeze criteria, group and parameter selection before evaluating on unused buildings&quot;,
     &quot;search_failure&quot;: &quot;not found in explored range; not a proof of nonexistence&quot;,
     &quot;archive_role&quot;: &quot;common mandatory preservation requirement; not an objective for lossy original-data reduction&quot;
-  }
+  },
+  &quot;primary_use_assumption&quot;: {
+    &quot;id&quot;: &quot;classification&quot;,
+    &quot;source&quot;: &quot;user_selected_initial_use_2026-10-19&quot;,
+    &quot;thesis_final_selection&quot;: false
+  },
+  &quot;proposal_note&quot;: &quot;All new numerical values are research proposals, not normative thresholds or measured achievements. Existing thresholds remain null until frozen. See the Japanese proposal for operational definitions and source limits.&quot;,
+  &quot;proposal_document&quot;: &quot;../research-master/数値基準と仮グループ_2026-10-19.md&quot;,
+  &quot;provisional_groups&quot;: [
+    {
+      &quot;id&quot;: &quot;G1&quot;,
+      &quot;name&quot;: &quot;寸法・位置&quot;,
+      &quot;members&quot;: [
+        &quot;building_model&quot;,
+        &quot;registration&quot;,
+        &quot;measurement&quot;,
+        &quot;change_detection&quot;
+      ],
+      &quot;status&quot;: &quot;hypothesis_not_validated&quot;
+    },
+    {
+      &quot;id&quot;: &quot;G2&quot;,
+      &quot;name&quot;: &quot;面・接続&quot;,
+      &quot;members&quot;: [
+        &quot;reconstruction&quot;,
+        &quot;structure&quot;,
+        &quot;flow&quot;,
+        &quot;acoustics&quot;
+      ],
+      &quot;status&quot;: &quot;hypothesis_not_validated&quot;
+    },
+    {
+      &quot;id&quot;: &quot;G3&quot;,
+      &quot;name&quot;: &quot;部材識別&quot;,
+      &quot;members&quot;: [
+        &quot;classification&quot;
+      ],
+      &quot;status&quot;: &quot;hypothesis_not_validated&quot;
+    },
+    {
+      &quot;id&quot;: &quot;G4&quot;,
+      &quot;name&quot;: &quot;表示・共有&quot;,
+      &quot;members&quot;: [
+        &quot;display&quot;
+      ],
+      &quot;status&quot;: &quot;hypothesis_not_validated&quot;
+    }
+  ],
+  &quot;cross_cutting_uses&quot;: [
+    &quot;archive&quot;
+  ],
+  &quot;group_validation_requirement&quot;: &quot;Same voxel size, neighborhood size, alpha, five weights, seed and input conditions; all mandatory gates of every group member. One representative per group does not validate within-group sharing.&quot;,
+  &quot;change_log&quot;: [
+    {
+      &quot;date&quot;: &quot;2026-10-19&quot;,
+      &quot;change&quot;: &quot;Added provisional numeric criteria for all 11 leaf uses and 4 tentative groups; kept frozen thresholds and decision records undecided; no experiments executed.&quot;
+    }
+  ]
 }
 </pre></main></body></html>
