@@ -1,0 +1,329 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>結果と条件.md｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>結果と条件.md</h1><p class="note">2026年10月19日に実測した1対象の予備比較です。品質の合格・他対象への一般化は未確認です。</p><h1>部材分類：1対象・3方式の予備比較</h1>
+<p>2026-10-19に実測。ArCH 2_OSA・タイル1の80,000点。Other 4,228点を除く75,772点で採点。別の4建物で学習した同じ分類器を固定。XYZから13特徴を毎回再計算。</p>
+<p><strong>結論：両間引きで点群容量は49.90%になったが、CSCの優位性は確認できなかった。全方式で絶対品質が未達。次は窓扉を中心に正解ラベル・特徴・分類器を点検する。</strong></p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th style="text-align: right;">無削減</th>
+<th style="text-align: right;">均一間引き</th>
+<th style="text-align: right;">CSC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>残存点数</td>
+<td style="text-align: right;">80,000点</td>
+<td style="text-align: right;">39,917点</td>
+<td style="text-align: right;">39,917点</td>
+</tr>
+<tr>
+<td>平均IoU（正解との重なり）</td>
+<td style="text-align: right;">33.07%</td>
+<td style="text-align: right;">41.42%</td>
+<td style="text-align: right;">41.17%</td>
+</tr>
+<tr>
+<td>無削減からの差</td>
+<td style="text-align: right;">基準</td>
+<td style="text-align: right;">+8.35ポイント</td>
+<td style="text-align: right;">+8.11ポイント</td>
+</tr>
+<tr>
+<td>柱 IoU / 再現率</td>
+<td style="text-align: right;">33.83 / 50.36%</td>
+<td style="text-align: right;">49.15 / 83.07%</td>
+<td style="text-align: right;">48.92 / 83.16%</td>
+</tr>
+<tr>
+<td>窓扉 IoU / 再現率</td>
+<td style="text-align: right;">1.70 / 6.70%</td>
+<td style="text-align: right;">1.65 / 12.53%</td>
+<td style="text-align: right;">1.62 / 12.20%</td>
+</tr>
+<tr>
+<td>予測なし率（採点対象）</td>
+<td style="text-align: right;">0.00%</td>
+<td style="text-align: right;">2.35%</td>
+<td style="text-align: right;">2.64%</td>
+</tr>
+<tr>
+<td>全処理時間 秒：中央値［最小–最大］</td>
+<td style="text-align: right;">2.08 ［1.92–2.22］</td>
+<td style="text-align: right;">1.97 ［1.84–2.11］</td>
+<td style="text-align: right;">5.04 ［3.77–5.48］</td>
+</tr>
+<tr>
+<td>うち実処理区間 秒：中央値</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">3.14</td>
+</tr>
+<tr>
+<td>点群容量 MiB（元の容量比）</td>
+<td style="text-align: right;">0.916（100.00%）</td>
+<td style="text-align: right;">0.457（49.90%）</td>
+<td style="text-align: right;">0.457（49.90%）</td>
+</tr>
+<tr>
+<td>ピークメモリ MiB：3回の最大</td>
+<td style="text-align: right;">544.1</td>
+<td style="text-align: right;">484.3</td>
+<td style="text-align: right;">484.6</td>
+</tr>
+<tr>
+<td>試行生成物合計 MiB：最大</td>
+<td style="text-align: right;">2.144</td>
+<td style="text-align: right;">1.303</td>
+<td style="text-align: right;">1.303</td>
+</tr>
+<tr>
+<td>暫定判定：絶対品質 / 追加損失</td>
+<td style="text-align: right;">未達 / 基準</td>
+<td style="text-align: right;">未達 / 2pt以内</td>
+<td style="text-align: right;">未達 / 2pt以内</td>
+</tr>
+<tr>
+<td>暫定判定：資源上限 / 容量52%</td>
+<td style="text-align: right;">通過 / 基準</td>
+<td style="text-align: right;">通過 / 通過</td>
+<td style="text-align: right;">通過 / 通過</td>
+</tr>
+</tbody>
+</table></div>
+<h2>読み方・固定条件</h2>
+<ul>
+<li>
+<p>均一は小区画（ボクセル）ごとに元点1個を無作為選択。CSCは形状から選択。両者39,917点、幅0.062747 m、目標50%削減、seed 0、CSC k=30・α=0.5・既定重み。</p>
+</li>
+<li>
+<p>IoUはクラスごとの一致度、再現率は正解点を拾えた割合。全元点へ最近傍転写し、距離0.05 m超は予測なし＝見逃しに算入。Other/Undefinedは学習・採点から除外。9クラス平均（階段は正解0でも誤予測ありでIoU 0）。</p>
+</li>
+<li>
+<p>各方式3回・順序を循環・別プロセス。全処理時間は起動・読込・間引き・特徴・分類・転写・採点・保存を含む。約0.1秒間隔で終了を検知。OSキャッシュは制御せず、品質の独立反復ではない。</p>
+</li>
+<li>
+<p>Apple M5・24 GiB。共有の学習 8.02秒、モデル 89.74 MiB、初期タイル抽出は比較時間外。点群はXYZ float32 NPY、1 MiB＝1,048,576 byte。生成物は予測・対応・測定記録を含み共有入力・モデルを除く。一時ファイル0 byte。</p>
+</li>
+<li>
+<p>暫定目標：平均IoU 70%、柱・窓扉の各IoU 70%・再現率90%、各追加低下2ポイント以内。資源上限900秒・16 GiB・一時4 GiB・最終1 GiB。1タイルの予備比較であり、他建物・群内共有・部材個体全体の見逃しは未検証。</p>
+</li>
+</ul>
+<p>メモリは子を含むRSSのサンプリング値とmacOSプロセス高水位の大きい方。表は3回の最大。観測された子プロセスは各試行で最大1、GPU・OS全体のメモリは対象外です。方式差の一般化はしません。</p>
+<p>学習は1_SC・3_SS・4_CG・5_CBの127,179点。対象建物2_OSAの全タイルを除外し、クラス0〜8だけを使用。Random Forest（複数の決定木による分類器）64木、最大深さ18、葉の最小5点、balanced、seed 0、2 workers。学習用34タイル＋評価1タイルで、再計算した13特徴と保存特徴の最大差は全件0。特徴照合・学習・入力準備の実測合計は28.80秒です。</p>
+<p>対象は柱5,872点、窓扉926点を含む最初の2_OSAタイルを、ラベル数だけで選択しました。7,123,548点の建物全体ではなく、以前抽出された8万点が「無削減」の起点です。過去の研究で使用した範囲であり、最終評価用に新しく確保した建物ではありません。</p>
+<h2>3回の測定値</h2>
+<p>時間は秒、メモリはMiB。反復番号0・1・2順に記載。処理順は「無削減→均一→CSC／均一→CSC→無削減／CSC→無削減→均一」。固定seedのため3回の予測配列は各方式内で完全一致しました。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>全処理時間 3回</th>
+<th>実処理区間 3回</th>
+<th>ピークメモリ 3回</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>無削減</td>
+<td>2.224330 / 1.918128 / 2.082157</td>
+<td>0.885816 / 0.850477 / 0.914197</td>
+<td>537.20 / 540.92 / 544.14</td>
+</tr>
+<tr>
+<td>均一間引き</td>
+<td>2.106228 / 1.836491 / 1.973979</td>
+<td>0.877628 / 0.734313 / 0.799098</td>
+<td>481.30 / 483.84 / 484.28</td>
+</tr>
+<tr>
+<td>CSC</td>
+<td>5.482263 / 5.044610 / 3.773983</td>
+<td>3.144306 / 3.995024 / 2.658238</td>
+<td>395.62 / 437.08 / 484.62</td>
+</tr>
+</tbody>
+</table></div>
+<h2>実処理時間の内訳（各3回の中央値、秒）</h2>
+<p>各工程の中央値の合計は、処理全体の中央値と一致するとは限りません。全処理時間との差には起動・ライブラリ読込・終了・測定の待ち時間などを含みます。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>工程</th>
+<th style="text-align: right;">無削減</th>
+<th style="text-align: right;">均一</th>
+<th style="text-align: right;">CSC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>入力・モデル読込</td>
+<td style="text-align: right;">0.0343</td>
+<td style="text-align: right;">0.0325</td>
+<td style="text-align: right;">0.0348</td>
+</tr>
+<tr>
+<td>間引き（格子幅探索を含む）</td>
+<td style="text-align: right;">0.0005</td>
+<td style="text-align: right;">0.3353</td>
+<td style="text-align: right;">2.6735</td>
+</tr>
+<tr>
+<td>13特徴の再計算</td>
+<td style="text-align: right;">0.6388</td>
+<td style="text-align: right;">0.3119</td>
+<td style="text-align: right;">0.2980</td>
+</tr>
+<tr>
+<td>分類</td>
+<td style="text-align: right;">0.1591</td>
+<td style="text-align: right;">0.0795</td>
+<td style="text-align: right;">0.0791</td>
+</tr>
+<tr>
+<td>元点への転写</td>
+<td style="text-align: right;">0.0304</td>
+<td style="text-align: right;">0.0196</td>
+<td style="text-align: right;">0.0200</td>
+</tr>
+<tr>
+<td>採点</td>
+<td style="text-align: right;">0.0008</td>
+<td style="text-align: right;">0.0008</td>
+<td style="text-align: right;">0.0008</td>
+</tr>
+<tr>
+<td>書出し・保存同期</td>
+<td style="text-align: right;">0.0039</td>
+<td style="text-align: right;">0.0039</td>
+<td style="text-align: right;">0.0014</td>
+</tr>
+</tbody>
+</table></div>
+<h2>クラス別の品質</h2>
+<p>IoU / 再現率（%）。階段は正解点0ですが全方式で誤予測があり、IoUは0・再現率は未定義です。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>クラス</th>
+<th style="text-align: right;">正解点数</th>
+<th style="text-align: right;">無削減</th>
+<th style="text-align: right;">均一</th>
+<th style="text-align: right;">CSC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arc</td>
+<td style="text-align: right;">6,945</td>
+<td style="text-align: right;">34.21 / 50.86</td>
+<td style="text-align: right;">36.62 / 54.57</td>
+<td style="text-align: right;">35.96 / 53.75</td>
+</tr>
+<tr>
+<td>Column</td>
+<td style="text-align: right;">5,872</td>
+<td style="text-align: right;">33.83 / 50.36</td>
+<td style="text-align: right;">49.15 / 83.07</td>
+<td style="text-align: right;">48.92 / 83.16</td>
+</tr>
+<tr>
+<td>Molding</td>
+<td style="text-align: right;">7,439</td>
+<td style="text-align: right;">12.21 / 31.05</td>
+<td style="text-align: right;">5.43 / 7.53</td>
+<td style="text-align: right;">5.33 / 7.41</td>
+</tr>
+<tr>
+<td>Floor</td>
+<td style="text-align: right;">16,443</td>
+<td style="text-align: right;">86.03 / 88.54</td>
+<td style="text-align: right;">86.36 / 88.21</td>
+<td style="text-align: right;">86.41 / 88.31</td>
+</tr>
+<tr>
+<td>Door-Window</td>
+<td style="text-align: right;">926</td>
+<td style="text-align: right;">1.70 / 6.70</td>
+<td style="text-align: right;">1.65 / 12.53</td>
+<td style="text-align: right;">1.62 / 12.20</td>
+</tr>
+<tr>
+<td>Wall</td>
+<td style="text-align: right;">23,906</td>
+<td style="text-align: right;">36.44 / 44.70</td>
+<td style="text-align: right;">54.17 / 62.19</td>
+<td style="text-align: right;">53.59 / 61.65</td>
+</tr>
+<tr>
+<td>Stairs</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00 / N/A</td>
+<td style="text-align: right;">0.00 / N/A</td>
+<td style="text-align: right;">0.00 / N/A</td>
+</tr>
+<tr>
+<td>Vault</td>
+<td style="text-align: right;">9,963</td>
+<td style="text-align: right;">29.36 / 32.87</td>
+<td style="text-align: right;">55.69 / 65.43</td>
+<td style="text-align: right;">55.18 / 64.69</td>
+</tr>
+<tr>
+<td>Roof</td>
+<td style="text-align: right;">4,278</td>
+<td style="text-align: right;">63.80 / 98.64</td>
+<td style="text-align: right;">83.67 / 96.54</td>
+<td style="text-align: right;">83.53 / 96.14</td>
+</tr>
+</tbody>
+</table></div>
+<h2>転写距離と容量</h2>
+<p>0.05 m超は予測なしとして真のクラスのFN（見逃し）に算入し、特定クラスを予測していないためFP（誤検出）は加えません。距離は継承したm単位の値です。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>方式</th>
+<th style="text-align: right;">距離95%点 / 最大 m</th>
+<th style="text-align: right;">距離超過点 全8万点 / 採点対象</th>
+<th style="text-align: right;">点群byte</th>
+<th style="text-align: right;">生成物byte（最大）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>無削減</td>
+<td style="text-align: right;">0.000000 / 0.000000</td>
+<td style="text-align: right;">0 / 0</td>
+<td style="text-align: right;">960,128</td>
+<td style="text-align: right;">2,248,422</td>
+</tr>
+<tr>
+<td>均一間引き</td>
+<td style="text-align: right;">0.045097 / 0.074875</td>
+<td style="text-align: right;">1,897 / 1,778</td>
+<td style="text-align: right;">479,132</td>
+<td style="text-align: right;">1,366,683</td>
+</tr>
+<tr>
+<td>CSC</td>
+<td style="text-align: right;">0.045722 / 0.074492</td>
+<td style="text-align: right;">2,114 / 1,999</td>
+<td style="text-align: right;">479,132</td>
+<td style="text-align: right;">1,366,672</td>
+</tr>
+</tbody>
+</table></div>
+<p>生成物合計はpoints、retained_ids、retained_predictions、full_predictions、projection_distancesのNPYとquality.json・run.json。共有入力・真値・モデル、全試行の集計・検証記録は除きます。実験では途中ファイルを書かず、RAM作業領域はメモリに含みます。入力・最終出力・モデルの容量を一時容量0と混同しません。</p>
+<h2>判定と次の作業</h2>
+<ul>
+<li>両間引きの容量52%以下・追加品質低下2ポイント以内・資源上限は通過。ただし絶対品質は全方式で未達です。無削減が弱い状態のまま「用途に合格」とはしません。</li>
+<li>CSCと均一の差は平均IoUで約-0.24ポイント。CSCがこの対象で優れる証拠は得られませんでした。1対象・固定seedから有意差や同等性を結論しません。</li>
+<li>無削減より間引き後の成績が高い理由は未確定です。固定点数近傍による特徴の変化、点密度、分類器の適合などを切り分ける必要があります。</li>
+<li>次は窓扉の正解ラベルと誤分類先を可視化して点検し、無削減でも識別できる特徴・分類器を整えます。その後に同条件比較と別対象での再確認へ進みます。基準を今回の成績に合わせて下げません。</li>
+<li>個体IDがないため「部材1本まるごとの消失・見逃し」は未評価。約3用途・群内設定共有・卒論の主用途最終選定は未完了です。</li>
+</ul>
+<h2>確認と再利用</h2>
+<p>評価の6テストが成功。9試行は終了コード0。同じ入力・モデル、同じ格子幅と39,917個の占有格子、元座標からの点選択、保存予測の再採点、固定seedの予測一致を検証しました。全入力・コード・出力のSHA-256をローカルに保存しています。</p>
+<p>既存の13特徴計算・ボクセル間引き・CSCを薄く再利用。既存の簡易4分類スクリプトはラベル体系・特徴・採点対象が今回と異なるため採用しませんでした。以前の10クラス・5建物平均の結果とは評価条件が違うので、数値を直接比較しません。</p>
+<p>元データはArCH dataset, Matrone et al. (2020)。既存の研究文献台帳S43・S44と数値基準案を継承し、新たな外部文献や原文引用を追加していません。生点群・正解ラベル・学習済みモデルは公開せず、集計と条件のみを掲載します。</p></main></body></html>
