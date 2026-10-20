@@ -1,0 +1,294 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>結果と判断.md｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>結果と判断.md</h1><p class="note">保存済み資料の公開用コピーです。作成時の実験条件・記録として参照し、今回の新しい実験結果とは区別してください。</p><h1>固定ルール対Jev：結果と次の判断</h1>
+<p>2026-10-19実施。<strong>人工文での設定選択補助は、確認処理を組み合わせたJevが事前の継続基準を全て通過した。Jevは継続候補とする。ただし実測候補が品質基準に達していないため、実データへの接続試験は今は保留する。</strong></p>
+<p>この実験で測ったのは日本語の優先事項の読取りであり、点群の分類品質・軽量化性能・利用者の作業時間の改善ではない。比較は完了した。追加の点群実験や次段階のAPI実行は行っていない。</p>
+<h2>比較結果</h2>
+<p>固定テスト16ケース48文。1ケースは同じ意図の3表現。Jevの「確認あり」は、最初に決めたconfidence（モデルの確信度指標）が0.6未満なら <code>clarify</code>（利用者に確認）に回す処理。0.6を正答率60%とは解釈しない。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th style="text-align: right;">固定ルール</th>
+<th style="text-align: right;">Jevそのまま</th>
+<th style="text-align: right;">Jev＋確認処理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3表現すべて正答したケース</td>
+<td style="text-align: right;">4/16（25.0%）</td>
+<td style="text-align: right;">15/16（93.8%）</td>
+<td style="text-align: right;">16/16（100.0%）</td>
+</tr>
+<tr>
+<td>文単位・最終候補/状態の正答</td>
+<td style="text-align: right;">14/48（29.2%）</td>
+<td style="text-align: right;">47/48（97.9%）</td>
+<td style="text-align: right;">48/48（100.0%）</td>
+</tr>
+<tr>
+<td>明確36文：正しく自動選択</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">36</td>
+</tr>
+<tr>
+<td>明確36文：誤った目的を選択</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>明確36文：不要な確認</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>確認が必要な12文：勝手に選択</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>システム失敗 / 条件違反</td>
+<td style="text-align: right;">0 / 0</td>
+<td style="text-align: right;">0 / 0</td>
+<td style="text-align: right;">0 / 0</td>
+</tr>
+<tr>
+<td>中央値 / 95%点 / 最大の待ち時間（秒）</td>
+<td style="text-align: right;">0.000192 / 0.000358 / 0.002479</td>
+<td style="text-align: right;">0.569325 / 2.056354 / 2.629526</td>
+<td style="text-align: right;">0.569325 / 2.056354 / 2.629526</td>
+</tr>
+</tbody>
+</table></div>
+<p>主指標の差は12/16ケース、75.0ポイント。人工文をまとめた小標本なので、有意差・実利用者全体への一般化は主張しない。最終候補の正答数は今回は意図の正答数と同じ。違う優先事項で別の候補になる架空表を使っており、偶然同じ候補になって意図誤りを隠す構成にはしていない。</p>
+<p>Jevそのままの1件の誤りは「表示している点群を回転させてもカクつかずに動くことを第一にしたいです。」（H-C04-2）。対象は処理時間で、表示操作の滑らかさは今回の選択肢の範囲外なので正解は確認。Jevは速度を選んだがconfidence=0.57だったため、事前の確認処理で正しく保留できた。この結果を見て閾値を変更していない。</p>
+<h2>固定ルールとの差の意味と限界</h2>
+<p>固定ルールは開発24文では24/24正答だったが、固定テストでは明確な要求36文のうち33文を確認に回した。「部材分類がどれだけ正しいか」「全体が終わるまでの早さ」など、辞書・文型から外れる表現に追従できなかった。また「ファイルを小さくするより、各回を短時間で回す」を容量優先とする誤案内が1件あった。</p>
+<p>固定ルールは同義語・否定・優先関係・同順位の衝突・数値条件の対象外処理を実装し、許された2回の改訂を使った。それでも開発用への適合と未知表現への対応に大きな差が残った。<strong>今回の結果はこの固定ルール実装との比較であり、全ての規則方式や、目的を直接選ぶメニューよりJevが優れる証明ではない。</strong> 結果を見て規則や質問を直し、同じ48文を再採点することはしていない。</p>
+<p>データはAIが作成し、別のAI担当が全正解・意味一致・分割・近重複を確認した人工文。実利用者から集めた要求ではない。24ケースは24人・24建物を意味しない。学習済みモデルの由来や提供側キャッシュは検証していない。</p>
+<h2>安定性・費用・確認できた範囲</h2>
+<ul>
+<li>事前指定した6文を同じ本文・同じ質問で各1回再送：選択結果は初回と6/6一致。選択肢順を逆にした各1回も6/6一致。生のChoiceと確認処理後の双方で一致した。確率分布全体の完全一致や一般的な再現性を保証する結果ではない。</li>
+<li>API要求は開発24＋本比較48＋安定性12＝<strong>84回</strong>。全て<code>jev-1.13.0</code>、再試行0、通信失敗0、タイムアウト0。利用量不明の要求0。</li>
+<li>入力<strong>76,673トークン</strong>。公式単価0.042米ドル/100万入力トークン・出力無料で計算した利用料は<strong>$0.003220266（約0.00322ドル、1ドル上限の約0.32%）</strong>。請求書・クレジット購入額は別で、実請求との照合は未実施。</li>
+<li>送信前に全要求を65,536入力トークン相当で予約し、全84回の保守的な予約総額も<strong>$0.231211008</strong>で1ドル未満。実費計算とこの余裕を持った上限を混同しない。</li>
+<li>共通条件照合等の19テストと固定ルールの10テストが成功。条件違反0は主に共通の固定処理と今回の候補表によるもので、Jevが数値条件を保証したという意味ではない。</li>
+<li>Python 3.14.6、Darwin-25.1.0-arm64-arm-64bit-Mach-O。R/Jは同一Macで、固定seedの順序・先行方式の交替で計測。通信・限定再試行を含む判定開始から最終状態までの時間。95%点は48件を昇順にして46番目。クライアントキャッシュなし、提供側キャッシュ・回線条件の独立計測なし。</li>
+</ul>
+<div class="table"><table>
+<thead>
+<tr>
+<th>区分</th>
+<th style="text-align: right;">要求数</th>
+<th style="text-align: right;">入力トークン</th>
+<th style="text-align: right;">単価からの利用料（米ドル）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>開発</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">21,812</td>
+<td style="text-align: right;">0.000916104</td>
+</tr>
+<tr>
+<td>本比較</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">43,931</td>
+<td style="text-align: right;">0.001845102</td>
+</tr>
+<tr>
+<td>安定性</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">10,930</td>
+<td style="text-align: right;">0.000459060</td>
+</tr>
+</tbody>
+</table></div>
+<p>料金とAPI仕様は、研究文献台帳に登録した <a href="https://docs.typesafe.ai/models">Models / S59-JEV20261019-02</a>、<a href="https://docs.typesafe.ai/api">API reference / S64-JEV20261019-01</a> の同じ箇所を使用。今回新しい外部文献は追加していない。</p>
+<h2>次の実験へ進むか</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>事前の継続条件（確認処理あり）</th>
+<th>結果</th>
+<th>判断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ケース正答が固定ルールより2件以上増加</td>
+<td>+12/16ケース</td>
+<td>通過</td>
+</tr>
+<tr>
+<td>明確文の誤案内がルール以下かつ2以下、正しい自動選択30以上</td>
+<td>誤案内0、正しい自動選択36/36</td>
+<td>通過</td>
+</tr>
+<tr>
+<td>曖昧文の過剰選択1以下、条件違反0</td>
+<td>過剰選択0、条件違反0</td>
+<td>通過</td>
+</tr>
+<tr>
+<td>最終候補/状態の正答がルール以上</td>
+<td>48/48 ≥ 14/48</td>
+<td>通過</td>
+</tr>
+<tr>
+<td>95%点3秒以内、API失敗1以下、予算内</td>
+<td>2.056秒、失敗0、計算額$0.003220266</td>
+<td>通過</td>
+</tr>
+<tr>
+<td>四分類それぞれのケース正答が悪化しない</td>
+<td>各4/4（ルールは品質0・速度0・容量0・確認4）</td>
+<td>通過</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>言語判定の予備試験は通過、実データへの接続は保留。</strong> Jevそのままでは確認群のケース正答が3/4と固定ルール4/4を下回るため、「分類別に悪化しない」という条件は通過しない。継続候補は確認処理ありの構成に限定する。</p>
+<p>既存のP0（無削減）・P1（均一50%）・P2（CSC50%）を読み取り再生すると、品質・速度・容量の全3優先で「条件を満たす候補なし」だった。Jevの推奨で品質基準を緩めない。新しい点群処理0回、RGB条件は利用していない。</p>
+<p>次の研究作業は、まず品質基準を満たす実測候補を整えること。その後、目的によって選ぶ候補が変わる実測上の差があり、評価対象を開発側と分離できた時点で、今回の確認処理付きJevを接続して比較する。条件がそろうまでは本研究の分類器・特徴の検証を優先し、Jevの自動設定機能は導入しない。</p>
+<h2>再現記録・計画との差</h2>
+<p>開発文24件に対する固定ルールは初回8/24→改訂1で24/24→仕様上の否定等を直した改訂2で24/24。Jevは開発の初回で24/24のため、API出力を見た質問改訂は0回。調整後の規則・質問・共通コード・データは本比較前にSHA-256で固定し、実行後も一致を確認した。開発と評価はケース単位で分け、主担当と規則担当は凍結前に評価本文を読んでいない。</p>
+<p>本比較の欠測・除外・再採点・条件変更はない。安定性の元出力<code>stability-summary.json</code>には共通集計器由来の<code>consistent_correct=0</code>があるが、各ケース2回であり「3表現全正答」という主指標は適用外。この欄は採否に使わず、本報告と結果集計では初回との一致数を別集計した。元記録は改変していない。</p>
+<ul>
+<li>集計と継続条件の機械判定（公開版未収録）</li>
+<li>48文の入力・正解・両方式の判定・時間（公開版未収録）</li>
+<li>入力・コード・応答記録のSHA-256（公開版未収録）</li>
+<li>事前計画（公開版未収録） / 実行準備の記録（公開版未収録）</li>
+<li>ローカル原記録：<code>data/jev-selection-pilot-2026-10-19/</code>（入力72文、API応答の正規フィールド、費用台帳、凍結記録）。キーはこの記録に含めない。</li>
+</ul>
+<p>完了時の独立確認：JOKが原記録から再集計し、正答数・ケース数・6条件・費用・凍結ハッシュ・本報告の結論に一致を確認。PASS、修正必須所見なし。既知の安定性集計欄の制約と未確認範囲は維持した。確認記録（公開版未収録）</p>
+<h2>16ケースの対照表</h2>
+<p>各欄は同じ意味の3表現中の正答数。3/3だけを主指標のケース正答に数える。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>ケースID</th>
+<th>正解</th>
+<th style="text-align: right;">固定ルール</th>
+<th style="text-align: right;">Jevそのまま</th>
+<th style="text-align: right;">Jev＋確認処理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>H-C01</td>
+<td>clarify</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-C02</td>
+<td>clarify</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-C03</td>
+<td>clarify</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-C04</td>
+<td>clarify</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">2/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-Q01</td>
+<td>quality</td>
+<td style="text-align: right;">0/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-Q02</td>
+<td>quality</td>
+<td style="text-align: right;">0/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-Q03</td>
+<td>quality</td>
+<td style="text-align: right;">1/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-Q04</td>
+<td>quality</td>
+<td style="text-align: right;">0/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-S01</td>
+<td>speed</td>
+<td style="text-align: right;">0/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-S02</td>
+<td>speed</td>
+<td style="text-align: right;">0/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-S03</td>
+<td>speed</td>
+<td style="text-align: right;">0/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-S04</td>
+<td>speed</td>
+<td style="text-align: right;">0/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-T01</td>
+<td>storage</td>
+<td style="text-align: right;">1/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-T02</td>
+<td>storage</td>
+<td style="text-align: right;">0/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-T03</td>
+<td>storage</td>
+<td style="text-align: right;">0/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+<tr>
+<td>H-T04</td>
+<td>storage</td>
+<td style="text-align: right;">0/3</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3/3</td>
+</tr>
+</tbody>
+</table></div></main></body></html>

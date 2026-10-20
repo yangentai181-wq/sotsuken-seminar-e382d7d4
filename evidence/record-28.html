@@ -1,0 +1,432 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>結果と判断.md｜研究の根拠資料</title><style>body{margin:0;background:#f8fafc;color:#172033;font:16px/1.9 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}main{max-width:1000px;margin:auto;padding:24px}h1{font-size:24px;overflow-wrap:anywhere}a{color:#0f766e}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7}table{border-collapse:collapse;font-size:13px;width:100%}th,td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;overflow-wrap:anywhere}.table{overflow:auto}blockquote,.note{border-left:3px solid #0f766e;padding:12px 16px;background:#eef8f5}code{overflow-wrap:anywhere}img{max-width:100%}@media(max-width:600px){main{padding:16px}h1{font-size:20px}}</style></head><body><main><a href="../index.html#research-roadmap">研究資料・ロードマップへ戻る</a><h1>結果と判断.md</h1><p class="note">保存済み資料の公開用コピーです。作成時の実験条件・記録として参照し、今回の新しい実験結果とは区別してください。</p><h1>形状特徴3条件の比較結果と次段階の判断</h1>
+<p>実施日：2026-10-19。第1段階の比較は完了。<strong>軽量化実験には進まない。合格候補は0件。</strong></p>
+<p>F2は全体と窓の成績を改善したが、1_SCで階段のIoUが5.56ポイント悪化し、事前の探索継続条件に不合格となった。品質基準Qにも届かない。計画どおりseed=1,2の追加比較、間引き・CSCの比較、Jev API呼出しは行わなかった。半径をさらに増やす探索も追加していない。</p>
+<h2>1. 何を比較したか</h2>
+<p>承認済み計画（公開版未収録）に従い、形状だけを使うRF（複数の決定木による分類器）の特徴を変更した。</p>
+<ul>
+<li>F0：現行13特徴。</li>
+<li>F1：F0＋半径0.15/0.30mの近傍特徴、計29特徴。</li>
+<li>F2：F1＋半径0.60mの近傍特徴、計37特徴。</li>
+</ul>
+<p>4建物（1_SC、3_SS、4_CG、5_CB）を1つずつ評価用に外し、残り3建物だけで学習した。モデルseed=0、各建物・各クラス最大4,000学習点、学習点の抽出seed=0を固定。木64本・深さ18・葉の最小点数5・balanced・bootstrap・各分岐の候補特徴数3・並列数2を全条件で共通にした。RGB、正解ラベル、評価建物の点は学習特徴の追加情報として使っていない。評価建物のXYZは、その建物の形状特徴の計算に使う。</p>
+<p>34タイルの入力2,563,211点すべてで形状特徴・予測を計算し、既存比較と同じ0〜8のラベルを持つ2,167,733点を採点した。配布原本の高密度点群全点での比較ではない。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>建物</th>
+<th style="text-align: right;">キャッシュ入力点数</th>
+<th style="text-align: right;">採点点数</th>
+<th style="text-align: right;">採点除外点数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1_SC</td>
+<td style="text-align: right;">720,000</td>
+<td style="text-align: right;">704,562</td>
+<td style="text-align: right;">15,438</td>
+</tr>
+<tr>
+<td>3_SS</td>
+<td style="text-align: right;">513,831</td>
+<td style="text-align: right;">508,685</td>
+<td style="text-align: right;">5,146</td>
+</tr>
+<tr>
+<td>4_CG</td>
+<td style="text-align: right;">720,000</td>
+<td style="text-align: right;">651,075</td>
+<td style="text-align: right;">68,925</td>
+</tr>
+<tr>
+<td>5_CB</td>
+<td style="text-align: right;">609,380</td>
+<td style="text-align: right;">303,411</td>
+<td style="text-align: right;">305,969</td>
+</tr>
+<tr>
+<td>合計</td>
+<td style="text-align: right;">2,563,211</td>
+<td style="text-align: right;">2,167,733</td>
+<td style="text-align: right;">395,478</td>
+</tr>
+</tbody>
+</table></div>
+<p>除外はラベル9が92,182点、10が303,296点。10は5_CBに存在し、既存前処理ではUndefinedとされる。計画の0〜9想定が誤っていたため、初回の入力監査が約1.78秒で停止した。失敗記録を保存し、<strong>既存と同じく0〜8だけを学習・採点し、9/10はXYZ近傍に残す</strong>ことを明示して再開した。再ラベル付けや点削除はしていない。実行条件の補足（公開版未収録）参照。</p>
+<h2>2. 主な結果</h2>
+<p>数値は%。IoUは正解点集合と予測点集合の重なり、平均IoUはクラスごとのIoUの平均。窓はDoor-Window（窓・扉統合）。建物平均は4建物を同じ重みで平均し、合算値は混同行列を合算してから計算した。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>条件</th>
+<th style="text-align: right;">平均IoU・建物平均</th>
+<th style="text-align: right;">平均IoU・合算</th>
+<th style="text-align: right;">窓IoU・建物平均</th>
+<th style="text-align: right;">窓の改善棟数</th>
+<th>探索継続</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F0</td>
+<td style="text-align: right;">20.92</td>
+<td style="text-align: right;">20.70</td>
+<td style="text-align: right;">5.71</td>
+<td style="text-align: right;">基準</td>
+<td>基準</td>
+</tr>
+<tr>
+<td>F1</td>
+<td style="text-align: right;">23.91</td>
+<td style="text-align: right;">23.53</td>
+<td style="text-align: right;">5.77（+0.05pt）</td>
+<td style="text-align: right;">2/4</td>
+<td>不合格</td>
+</tr>
+<tr>
+<td>F2</td>
+<td style="text-align: right;">29.34</td>
+<td style="text-align: right;">29.93</td>
+<td style="text-align: right;">8.21（+2.50pt）</td>
+<td style="text-align: right;">3/4</td>
+<td>不合格</td>
+</tr>
+</tbody>
+</table></div>
+<p>F2の全体改善は確認できた。一方、「全体平均が上がること」と「必要な部材を落とさないこと」は両立していない。以下は建物別の実測値。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>建物</th>
+<th style="text-align: right;">F0 平均IoU</th>
+<th style="text-align: right;">F1 平均IoU</th>
+<th style="text-align: right;">F2 平均IoU</th>
+<th style="text-align: right;">F0 窓IoU</th>
+<th style="text-align: right;">F1 窓IoU</th>
+<th style="text-align: right;">F2 窓IoU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1_SC</td>
+<td style="text-align: right;">21.23</td>
+<td style="text-align: right;">23.24</td>
+<td style="text-align: right;">30.32</td>
+<td style="text-align: right;">6.99</td>
+<td style="text-align: right;">6.58</td>
+<td style="text-align: right;">8.70</td>
+</tr>
+<tr>
+<td>3_SS</td>
+<td style="text-align: right;">17.56</td>
+<td style="text-align: right;">22.11</td>
+<td style="text-align: right;">29.74</td>
+<td style="text-align: right;">6.85</td>
+<td style="text-align: right;">6.51</td>
+<td style="text-align: right;">6.54</td>
+</tr>
+<tr>
+<td>4_CG</td>
+<td style="text-align: right;">20.75</td>
+<td style="text-align: right;">23.56</td>
+<td style="text-align: right;">27.46</td>
+<td style="text-align: right;">1.52</td>
+<td style="text-align: right;">2.17</td>
+<td style="text-align: right;">3.32</td>
+</tr>
+<tr>
+<td>5_CB</td>
+<td style="text-align: right;">24.17</td>
+<td style="text-align: right;">26.74</td>
+<td style="text-align: right;">29.86</td>
+<td style="text-align: right;">7.49</td>
+<td style="text-align: right;">7.80</td>
+<td style="text-align: right;">14.28</td>
+</tr>
+</tbody>
+</table></div>
+<p>全体平均の最悪建物はF0が3_SS（17.56%）、F1が3_SS（22.11%）、F2が4_CG（27.46%）。窓の最悪建物は3条件とも4_CG。</p>
+<h2>3. 計画の合否判定</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>探索継続条件</th>
+<th>F1</th>
+<th>F2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>窓の建物平均IoUが2pt以上改善</td>
+<td>× +0.05pt</td>
+<td>○ +2.50pt</td>
+</tr>
+<tr>
+<td>窓IoUが3/4建物以上で改善</td>
+<td>× 2/4</td>
+<td>○ 3/4</td>
+</tr>
+<tr>
+<td>平均IoUの建物平均・合算が両方改善</td>
+<td>○</td>
+<td>○</td>
+</tr>
+<tr>
+<td>各建物の柱・窓IoU/再現率、階段IoUの悪化が2pt以内</td>
+<td>×</td>
+<td>×</td>
+</tr>
+<tr>
+<td>入力・全4分割・資源条件を確認</td>
+<td>○</td>
+<td>○</td>
+</tr>
+</tbody>
+</table></div>
+<p>2ptを超えた悪化は次のとおり。再現率は正解点を拾えた割合。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>条件</th>
+<th>建物・指標</th>
+<th style="text-align: right;">F0</th>
+<th style="text-align: right;">比較条件</th>
+<th style="text-align: right;">低下幅</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F1</td>
+<td>1_SC 柱再現率</td>
+<td style="text-align: right;">60.28</td>
+<td style="text-align: right;">52.05</td>
+<td style="text-align: right;">8.23pt</td>
+</tr>
+<tr>
+<td>F1</td>
+<td>1_SC 階段IoU</td>
+<td style="text-align: right;">10.56</td>
+<td style="text-align: right;">3.57</td>
+<td style="text-align: right;">6.99pt</td>
+</tr>
+<tr>
+<td>F1</td>
+<td>5_CB 窓再現率</td>
+<td style="text-align: right;">32.59</td>
+<td style="text-align: right;">28.48</td>
+<td style="text-align: right;">4.11pt</td>
+</tr>
+<tr>
+<td>F2</td>
+<td>1_SC 階段IoU</td>
+<td style="text-align: right;">10.56</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">5.56pt</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>F2は窓の改善条件を通ったが、階段を守る条件で失格。追加seedに進む候補は選ばれなかった。</strong> seed=1,2の安定性は未評価であり、不安定と実測したわけではない。</p>
+<p>さらに、軽量化前提の品質基準Q（合算平均IoU≥70%、柱・窓IoU≥70%／再現率≥90%など）にも大きな差がある。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Qの合算指標</th>
+<th style="text-align: right;">目標</th>
+<th style="text-align: right;">F2実測</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平均IoU</td>
+<td style="text-align: right;">≥70</td>
+<td style="text-align: right;">29.93</td>
+</tr>
+<tr>
+<td>柱IoU</td>
+<td style="text-align: right;">≥70</td>
+<td style="text-align: right;">53.47</td>
+</tr>
+<tr>
+<td>柱再現率</td>
+<td style="text-align: right;">≥90</td>
+<td style="text-align: right;">76.78</td>
+</tr>
+<tr>
+<td>窓IoU</td>
+<td style="text-align: right;">≥70</td>
+<td style="text-align: right;">7.48</td>
+</tr>
+<tr>
+<td>窓再現率</td>
+<td style="text-align: right;">≥90</td>
+<td style="text-align: right;">37.14</td>
+</tr>
+</tbody>
+</table></div>
+<p>Qは建物別と3seedでも成立することが必要。今回はseed=0の合算値ですでに未達で、注釈疑義も未解決である。基準値は下げていない。</p>
+<h2>4. 残った誤り</h2>
+<p>合算した9クラスの成績。各セルは「IoU / 再現率」（%）。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>クラス</th>
+<th style="text-align: right;">F0</th>
+<th style="text-align: right;">F1</th>
+<th style="text-align: right;">F2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arc</td>
+<td style="text-align: right;">8.02 / 24.26</td>
+<td style="text-align: right;">13.97 / 41.80</td>
+<td style="text-align: right;">17.73 / 50.21</td>
+</tr>
+<tr>
+<td>Column</td>
+<td style="text-align: right;">20.45 / 51.19</td>
+<td style="text-align: right;">24.48 / 52.75</td>
+<td style="text-align: right;">53.47 / 76.78</td>
+</tr>
+<tr>
+<td>Molding</td>
+<td style="text-align: right;">10.04 / 15.23</td>
+<td style="text-align: right;">10.89 / 16.02</td>
+<td style="text-align: right;">17.81 / 25.43</td>
+</tr>
+<tr>
+<td>Floor</td>
+<td style="text-align: right;">73.97 / 77.60</td>
+<td style="text-align: right;">78.54 / 82.11</td>
+<td style="text-align: right;">89.70 / 93.89</td>
+</tr>
+<tr>
+<td>Door-Window</td>
+<td style="text-align: right;">6.40 / 29.80</td>
+<td style="text-align: right;">6.19 / 31.14</td>
+<td style="text-align: right;">7.48 / 37.14</td>
+</tr>
+<tr>
+<td>Wall</td>
+<td style="text-align: right;">31.78 / 44.12</td>
+<td style="text-align: right;">33.48 / 44.19</td>
+<td style="text-align: right;">34.91 / 46.95</td>
+</tr>
+<tr>
+<td>Stairs</td>
+<td style="text-align: right;">5.77 / 18.72</td>
+<td style="text-align: right;">2.09 / 5.85</td>
+<td style="text-align: right;">1.61 / 2.83</td>
+</tr>
+<tr>
+<td>Vault</td>
+<td style="text-align: right;">13.16 / 16.81</td>
+<td style="text-align: right;">26.64 / 39.40</td>
+<td style="text-align: right;">32.56 / 48.38</td>
+</tr>
+<tr>
+<td>Roof</td>
+<td style="text-align: right;">16.69 / 31.44</td>
+<td style="text-align: right;">15.51 / 26.54</td>
+<td style="text-align: right;">14.14 / 23.36</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>1_SCの階段→Vaultが増加</strong>：階段の正解37,762点中、Vaultへの誤分類がF0の1,474点からF2の26,893点へ増えた。階段として正解した点は19,235→2,065点。どの形状・領域で起きたかは未確認であり、半径拡大だけが原因と断定しない。</li>
+<li><strong>窓と壁・装飾縁の混同が残る</strong>：F2では正解の窓32,686点の40.00%をWall、16.44%をMoldingへ誤分類。逆方向のWall→窓は67,804点。窓IoUの低さは見逃しだけでなく誤検出も含む。</li>
+<li><strong>階段→窓は減少</strong>：合算884→37点。ただし階段を正しく分類する改善ではなく、別クラスへの誤分類が残っている。</li>
+</ul>
+<p>近傍不足等で無効となった特徴の割合は、採点点について半径0.15mで3.708%、0.30mで0.104%、0.60mで0.003%。点を捨てず、計画どおり有効フラグと近傍点数を残した。これだけで誤分類原因を特定することはできない。</p>
+<p>境界の補助分析は、元の切断位置ではなくXY外接矩形から0.60以内の近似（461,734採点点）。窓IoUの近似境界側／内部側はF0で9.88/5.55%、F1で10.46/5.25%、F2で12.42/6.53%。実境界の効果とは断定せず、合否にも使用していない。近似境界側の無効率は各半径2.891/0.078/0.005%。</p>
+<h2>5. 時間・メモリ・保存容量</h2>
+<p>Apple M5、実メモリ24GiB、macOS 26.1。Python 3.12.13、NumPy 2.4.4、SciPy 1.17.1、scikit-learn 1.8.0。RF/近傍探索の並列数2、5つの内部並列用環境変数を1に固定した。全プロセスのスレッド数が常時2以下だったという意味ではない。</p>
+<p>成功した比較実行は<strong>553.16秒（9.22分）</strong>。初回監査失敗・修正を含む共通計算枠で639.11秒（10.65分）、上限4時間以内。比較学習12回＋F0同値確認用4回。追加16比較学習は条件不通過により未実行。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>条件</th>
+<th style="text-align: right;">特徴準備の子ジョブ経過時間合計</th>
+<th style="text-align: right;">比較モデルの学習時間合計</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F0</td>
+<td style="text-align: right;">35.53秒</td>
+<td style="text-align: right;">27.46秒</td>
+<td>別途sqrt同値確認27.51秒</td>
+</tr>
+<tr>
+<td>F1</td>
+<td style="text-align: right;">154.72秒</td>
+<td style="text-align: right;">24.67秒</td>
+<td>F0を再利用し0.15/0.30を追加</td>
+</tr>
+<tr>
+<td>F2</td>
+<td style="text-align: right;">202.38秒</td>
+<td style="text-align: right;">29.89秒</td>
+<td>F1を再利用し0.60だけを追加</td>
+</tr>
+</tbody>
+</table></div>
+<p>上表の特徴準備時間は共有キャッシュの増分で、単独実行の速度比較には使わない。以下は固定タイル1_SC_0・80,000点について、<strong>新プロセス起動→入力/モデル読込→全特徴の再計算→推論→元点転写→採点→書出し/同期→終了</strong>を測った別計測。</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>条件</th>
+<th style="text-align: right;">一連処理の経過時間</th>
+<th style="text-align: right;">うち特徴再計算</th>
+<th style="text-align: right;">監視対象プロセス群のRSSピーク</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F0</td>
+<td style="text-align: right;">2.14秒</td>
+<td style="text-align: right;">0.63秒</td>
+<td style="text-align: right;">0.485GiB</td>
+</tr>
+<tr>
+<td>F1</td>
+<td style="text-align: right;">4.89秒</td>
+<td style="text-align: right;">3.45秒</td>
+<td style="text-align: right;">0.488GiB</td>
+</tr>
+<tr>
+<td>F2</td>
+<td style="text-align: right;">7.04秒</td>
+<td style="text-align: right;">5.64秒</td>
+<td style="text-align: right;">0.491GiB</td>
+</tr>
+</tbody>
+</table></div>
+<p>各1回、モデルseed=0。OSキャッシュは消しておらず、完全な冷起動・速度の再現性・100万点のR15合格は未確認。速度で候補を採用する段階に至らなかったため、同一モデルの追加2反復も行っていない。</p>
+<ul>
+<li>全ジョブのRSS合計ピーク実測0.701GiB／上限16GiB。監視間隔0.25秒を指定したサンプリング値。監視処理時間で間隔は延びるため、瞬間ピークの完全な捕捉は保証しない。</li>
+<li>特徴キャッシュの同時占有0.754GiB／上限4GiB。1子ジョブの最終生成物最大81.95MiB／上限1GiB。成功実験の保存物全体は約1.62GiB（入力控え・全モデル・全特徴等を含む）で、1試行上限とは区別する。</li>
+<li>再開後117子ジョブはすべて終了コード0。タイムアウト・資源上限超過なし。最初の入力監査失敗は別記録として保持。</li>
+<li>OS全体の使用スワップは開始時37,425.75MiB、終了時37,618.88MiB。他アプリの負荷を隔離した速度試験ではなく、この増分を本実験だけの影響とはしない。</li>
+<li><strong>Jev/API呼出し0回、追加API費用$0。</strong> Codex会話のトークン数は今回計測していない。</li>
+</ul>
+<h2>6. 次に進めるか</h2>
+<p><strong>軽量化（均一間引き／CSC）とJevの再比較は保留する。今回の3半径追加案の探索はここで止める。</strong> F2は診断用の実測結果として残すが、採用済み・品質合格候補とは扱わない。</p>
+<p>次は小領域の誤り監査を計画する。優先候補は、最大の階段悪化が出た<strong>1_SC</strong>と、3条件とも窓IoUが最低の<strong>4_CG</strong>。同じ点ID・同じ視点でF0/F1/F2と正解を並べ、窓・柱・階段の誤りを各最大10領域ずつ固定抽出し、注釈・局所形状・学習側との違いを切り分ける。誤り率が下がった領域だけを選ばない。</p>
+<p>4_CGには階段の正解点が0のため、階段の見逃しはN/A。階段の誤検出を別枠で扱い、存在しない正解を10領域あることにしない。小領域は独立した建物や部材個体の数として数えない。この領域監査自体は今回未実施。</p>
+<p>監査を踏まえて必要なら特徴・モデル・学習量のどれか1要素を変える別計画を立てる。基準に合わせて半径や閾値を後付けで増やさず、品質が成立してから軽量化を再開する。</p>
+<h2>7. 検証と記録</h2>
+<p>新規特徴・判定23テストと既存採点・分割9テストが成功。F0の34タイルの13特徴は保存済み値との差0、4建物の予測は過去と完全一致。<code>max_features=3</code>と<code>sqrt</code>の64本の木・予測も4分割で一致した。</p>
+<p>保存予測7,689,633行を既存採点関数を使わず直接再集計し、12件の混同行列・IoU・再現率を照合。102特徴配列の形・有限値・ハッシュ・共通列の一致、学習点ID、117子ジョブの終了・資源記録、ベンチマーク予測と本比較予測の一致、凍結コード・入力・旧比較資料のハッシュ不変を確認した。</p>
+<ul>
+<li>manifest.json（公開版未収録）：凍結条件、入力、環境、除外、コードハッシュ。</li>
+<li>summary.json（公開版未収録）：全指標と機械判定。</li>
+<li>metrics.csv（公開版未収録） / confusion.json（公開版未収録）：建物×クラス×条件の全108成績行と混同行列。</li>
+<li>resources.csv（公開版未収録）：117子ジョブの実行・時間・資源・終了コード。</li>
+<li>verification.json（公開版未収録）：保存物の独立再集計・照合結果。</li>
+<li>completion.json（公開版未収録） / 初回失敗記録（公開版未収録）。</li>
+<li>実験コード（公開版未収録） / 特徴定義（公開版未収録） / 独立照合コード（公開版未収録）。</li>
+</ul>
+<p>未確認：原注釈の意味の正しさ、元の切断境界、単位・鉛直の独立確認、部材個体の全見逃し、高密度原本全点での品質、未使用建物への一般化、seed=1,2の安定性。既存5建物は過去の探索に使われており、今回の4建物は最終的な未知建物テストではない。参照資料は承認済み計画・既存診断を再利用し、新しい外部出典は採用していない。</p>
+<p>2026-10-19、NIYUが保存予測の独立再集計と本報告・資源記録を読み取り照合し、判定と報告の整合性をPASSと評価した。これは研究の品質基準Qへの合格ではない。</p></main></body></html>

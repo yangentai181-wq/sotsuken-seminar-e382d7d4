@@ -950,6 +950,25 @@
 #classification-pilot tbody th{font-weight:500}
 #classification-pilot tbody tr:nth-child(even){background:#f1f6f4}
 @media print{#classification-pilot .pilot-table{overflow:visible}#classification-pilot table{min-width:0;font-size:10px}#classification-pilot th,#classification-pilot td{padding:5px}}
+      /* Seminar briefing: reuse the master page's cards and disclosure controls. */
+      #seminar-brief { scroll-margin-top: 24px; }
+      #seminar-brief .brief-intro { border-left: 4px solid #0f766e; padding: 8px 0 8px 22px; margin-bottom: 24px; }
+      #seminar-brief .brief-intro h3 { font-size: clamp(23px, 3vw, 32px); line-height: 1.6; margin: 0 0 12px; }
+      #seminar-brief .brief-intro p { font-size: 16px; line-height: 1.9; margin: 8px 0; }
+      #seminar-brief .brief-criteria { padding: 16px 20px; background: #f0fdfa; border-radius: 8px; line-height: 1.9; }
+      #seminar-brief .brief-results { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 24px 0; }
+      #seminar-brief .brief-results article { min-width: 0; padding: 22px; }
+      #seminar-brief .brief-results h3 { font-size: 21px; line-height: 1.6; margin: 10px 0; }
+      #seminar-brief .brief-results p { font-size: 15px; line-height: 1.9; }
+      #seminar-brief .brief-number { display: block; font-size: 27px; font-weight: 750; color: #0f766e; margin: 14px 0 4px; font-variant-numeric: tabular-nums; }
+      #seminar-brief .brief-limit { border-top: 1px solid #cbd5e1; padding-top: 12px; color: #475569; }
+      #seminar-brief .brief-questions li { margin: 12px 0; line-height: 1.9; }
+      #seminar-brief .brief-questions li strong { display: block; }
+      #seminar-brief details { margin-top: 20px; }
+      #seminar-brief details summary { cursor: pointer; font-weight: 700; color: #0f766e; padding-block: 12px; }
+      #seminar-brief details p { line-height: 1.9; }
+      @media (max-width: 800px) { #seminar-brief .brief-results { grid-template-columns: 1fr; gap: 12px; } }
+      @media print { #seminar-brief .brief-results article, #seminar-brief .brief-questions { break-inside: avoid; } }
     </style>
     <style id="research-roadmap-style">
 /* Research roadmap — scoped to preserve the existing research page. */
@@ -1235,11 +1254,58 @@
       <p class="v-eyebrow">研究管理マスタ <span>建築点群リサーチ</span></p>
       <h1>点群データの効果的なリダクション手法についての研究</h1>
       <p class="v-lead">研究課題、進捗、比較実験、論文執筆までをこのページで管理します。</p>
-      <nav class="v-nav" aria-label="研究管理の案内"><a href="#weekly-progress">今週の進捗</a><a href="#research-log">研究ログ</a><a href="#seminar-summary">研究概要</a><a href="#research-four-steps">4段階の現在地</a><a href="#criteria-proposal">数値基準と仮グループ</a><a href="#research-roadmap">チェックリスト</a><details class="reading-menu"><summary>研究内容・資料</summary><div><a href="#classification-pilot">分類の予備実験</a><a href="#photo-rgb-alignment">6写真の位置補正・RGB比較</a><a href="#photo-rgb-gate">写真RGBの採用条件・注釈範囲</a><a href="#photo-rgb-audit">元写真・RGBと注釈の監査</a><a href="#rgb-error-diagnosis">RGBの問題・3建物の診断</a><a href="#rgb-comparison">RGB比較（判断を訂正）</a><a href="#window-diagnosis">窓扉の誤分類診断</a><a href="#seminar-comparison">従来の形状比較</a><a href="#visual-flow">全体の流れ</a><a href="#visual-question">研究の焦点</a><a href="#visual-tests">比べ方</a><a href="#ai-optimization">AIで重みを調整</a><a href="#visual-exits">8系統・11用途</a><a href="#visual-reference">詳しい資料</a></div></details></nav>
+      <nav class="v-nav" aria-label="研究管理の案内"><a href="#seminar-brief">ゼミ報告・相談</a><a href="#weekly-progress">今週の進捗</a><a href="#research-log">研究ログ</a><a href="#seminar-summary">研究概要</a><a href="#research-four-steps">4段階の現在地</a><a href="#criteria-proposal">数値基準と仮グループ</a><a href="#research-roadmap">チェックリスト</a><details class="reading-menu"><summary>研究内容・資料</summary><div><a href="#classification-pilot">分類の予備実験</a><a href="#photo-rgb-alignment">6写真の位置補正・RGB比較</a><a href="#photo-rgb-gate">写真RGBの採用条件・注釈範囲</a><a href="#photo-rgb-audit">元写真・RGBと注釈の監査</a><a href="#rgb-error-diagnosis">RGBの問題・3建物の診断</a><a href="#rgb-comparison">RGB比較（判断を訂正）</a><a href="#window-diagnosis">窓扉の誤分類診断</a><a href="#seminar-comparison">従来の形状比較</a><a href="#visual-flow">全体の流れ</a><a href="#visual-question">研究の焦点</a><a href="#visual-tests">比べ方</a><a href="#ai-optimization">AIで重みを調整</a><a href="#visual-exits">8系統・11用途</a><a href="#visual-reference">詳しい資料</a></div></details></nav>
     </header>
     <main>
+      <section class="v-wrap v-section" id="seminar-brief" aria-labelledby="seminar-brief-title">
+        <div class="v-heading"><h2 id="seminar-brief-title">ゼミ報告と相談したいこと</h2><p>2026年10月21日更新 · 10月19日までの実験記録を整理</p></div>
+        <div class="brief-intro">
+          <p class="v-eyebrow">今回伝えること</p>
+          <h3>用途別の評価案を具体化し、<br>実験で改善点と限界を切り分けました。</h3>
+          <p>同じ建築点群でも、部材の分類・面の復元・計測では、残すべき情報が変わります。用途に必要な品質と処理負荷を両立できる間引き条件を調べることが、研究の狙いです。</p>
+          <p><strong>現在は、分類を先行用途として検証中。</strong>品質が成立する条件を整え、卒論で詳しく扱う範囲を相談したいと考えています。</p>
+        </div>
+        <div class="brief-criteria"><strong>評価案を整備：</strong>11用途の必要情報・評価方法・品質の数値案・時間や容量の上限を整理し、要求が近い4群を仮置きしました。分類の暫定目標は、平均IoU 70%以上、重要候補の柱・窓扉の再現率90%以上などです。<strong>数値の正式固定と、群内で同じ設定を共有できるかの検証はこれからです。</strong> <a href="#criteria-proposal">基準案を見る →</a></div>
+        <div class="brief-results">
+          <article class="seminar-card">
+            <span class="weekly-state">01 · 軽量化の予備比較</span>
+            <h3>容量は約半分。<br>品質の合格には未到達。</h3>
+            <span class="brief-number">容量 49.90%</span>
+            <p>1対象・8万点で、無削減／均一間引き／CSCを比較。平均IoUは順に<strong>33.07%／41.42%／41.17%</strong>でした。</p>
+            <p class="brief-limit">全方式が暫定品質目標に未達。この条件ではCSCの優位性を確認できませんでした。</p>
+            <a href="#classification-pilot">品質・時間・容量の比較を見る →</a>
+          </article>
+          <article class="seminar-card">
+            <span class="weekly-state">02 · 分類の改善を比較</span>
+            <h3>平均は改善。<br>階段の悪化が残りました。</h3>
+            <span class="brief-number">20.92 → 29.34%</span>
+            <p>4建物で、周囲の形状情報を追加する3条件を比較。平均IoUの建物平均は改善しましたが、1_SCの階段IoUは<strong>5.56ポイント悪化</strong>しました。</p>
+            <p class="brief-limit">事前に決めた継続条件を満たす候補は0件。追加の軽量化比較には進んでいません。</p>
+            <a href="evidence/record-28.html">3条件の結果と判断を見る →</a>
+          </article>
+          <article class="seminar-card">
+            <span class="weekly-state">03 · 色と正解ラベルを点検</span>
+            <h3>色による改善の判断を訂正。<br>入力の信頼性を確認中。</h3>
+            <span class="brief-number">写真の色 · 採用0点</span>
+            <p>配布された色（RGB）には、正解ラベル由来の色が混入した疑いがあります。自然な色の有効性を示すという判断は撤回しました。</p>
+            <p class="brief-limit">元写真との位置対応も比較しましたが、今回の条件で採用できる色は0点。写真の色による分類改善は未確認です。</p>
+            <a href="#rgb-error-diagnosis">訂正の根拠を見る →</a> · <a href="#photo-rgb-alignment">写真との対応結果 →</a>
+          </article>
+        </div>
+        <p class="v-note">IoU＝予測と正解の重なりを測る指標。再現率＝正解の点を拾えた割合。CSC＝周囲の形状を採点し、小区画ごとに残す点を選ぶ提案方式。1対象の比較と4建物の比較は条件が異なり、数値を直接比較しません。</p>
+        <div class="seminar-next brief-questions">
+          <h3>先生に相談したい3点</h3>
+          <ol>
+            <li><strong>卒論の中心用途を、部材分類に絞ってよいでしょうか。</strong>用途別に必要な品質と処理負荷を比べる研究の中で、深く検証する用途と必須実験を決めたいです。</li>
+            <li><strong>分類器の改善をどこまで行い、軽量化の比較へ戻るべきでしょうか。</strong>まず1_SCの階段と4_CGの窓扉を小領域で点検し、正解ラベル・形状・学習データの違いを切り分ける案です。</li>
+            <li><strong>想定用途に対して、品質目標と部材の評価範囲は妥当でしょうか。</strong>平均IoU 70%・重要部材の再現率90%という暫定案と、窓・枠・階段の付属部分をどこまで同じ部材として扱うかを確認したいです。</li>
+          </ol>
+        </div>
+        <details class="report-detail"><summary>補足：Jevによる要求読取りの予備実験</summary><div><p>利用者の文章から品質・速度・容量などの優先事項を読み取る補助として、確認処理付きJevを固定ルールと比較しました。人工の48文では48/48正答でした。ただし、実利用者による評価や点群の分類品質の改善を示す結果ではありません。</p><p>実測の品質基準を満たす候補がないため、点群処理への接続は保留しています。<a href="evidence/record-29.html">条件・結果・限界を見る →</a></p></div></details>
+        <p class="v-note">次の作業案は先生との相談前の案です。今回の更新は保存済み結果の整理で、新しい点群実験は行っていません。詳しい経緯は下の進捗・研究ログから確認できます。</p>
+      </section>
       <section class="v-wrap v-section" id="weekly-progress" aria-labelledby="weekly-progress-title">
-        <div class="v-heading"><h2 id="weekly-progress-title">今週の進捗</h2><p>2026年10月19日 ゼミ報告 · 10月12日 11時ごろ〜10月19日</p></div>
+        <div class="v-heading"><h2 id="weekly-progress-title">これまでの進捗</h2><p>2026年10月19日 ゼミ報告 · 10月12日 11時ごろ〜10月19日</p></div>
         <div class="weekly-lead"><div><p class="v-eyebrow">各2写真で、調整用と検証用を分けて位置を補正しました</p><h3>6写真の補正前後を比較。<br>全体の改善とRGB採用増は確認できませんでした。</h3><p>72の対応候補を事前に分割し、32点で調整・34点で検証しました。検証RMSEは3写真で改善、2写真で悪化、1写真で横ばい。全体20.44→20.46px、RGBの最終採用は全3建物0→0点でした。</p></div><aside class="weekly-position"><span>いまの段階</span><strong>03 <span>位置補正の前後比較まで</span></strong><a href="#research-four-steps">4段階の現在地へ →</a></aside></div>
         <div class="status-grid weekly-grid">
           <article class="seminar-card weekly-compact"><div class="weekly-card-head"><span>評価基準</span><span class="weekly-state">数値案・4群あり</span></div><h3>8系統を11用途に分けて整理</h3><p class="weekly-brief">必要情報・測り方・数値案・資源上限を11用途で整理。</p><details class="report-detail"><summary>取り組んだ内容を見る</summary><div><p>用途ごとに、残す情報・評価指標・独立した基準データ・未確定事項を記録しました。共通設定で群内の全用途を満たせるか、検証する方針も具体化しています。</p></div></details><p class="weekly-limit">到達点：品質・時間・容量の数値案と4群の仮説まで。基準の正式固定と実験での検証はこれからです。</p><div class="weekly-links"><a href="#research-four-steps">進め方と現在地を見る →</a></div></article>
@@ -1341,8 +1407,12 @@
 <section class="v-wrap v-section" id="research-log" aria-labelledby="research-log-title">
 <div class="v-heading"><h2 id="research-log-title">研究ログ</h2><p>いつ、何を進めたか</p></div>
 <p class="log-intro">成果と、その時点で残った課題を日付ごとに記録します。各日付を開くと、作業内容と資料を確認できます。</p>
-<p class="log-meta">17件の記録 · 新しい日付から表示 · 同日の項目順は作業順を表しません</p>
+<p class="log-meta">18件の記録 · 新しい日付から表示 · 同日の項目順は作業順を表しません</p>
 <div class="log-days">
+<details class="log-day" id="log-day-2026-10-21"><summary><time datetime="2026-10-21">2026.10.21</time><span>1件<span class="log-day-categories">マスタ整備</span></span><span class="log-toggle" aria-hidden="true"></span></summary><div class="log-entries">
+<article class="log-entry" id="log-20261021-seminar-brief"><span class="log-category">マスタ整備</span><h3>ゼミ報告の要点と相談3点をマスタ先頭へ整理</h3><p>11用途の評価案、軽量化の予備比較、形状特徴追加の4建物比較、色データの判断訂正を先頭に要約。卒論の中心用途・分類改善の範囲・品質目標と部材の評価範囲を相談3点としてまとめ、Jevの人工文による比較を補足にしました。10月19日の保存済み結果を整理したもので、新しい実験は行っていません。</p><p class="log-remaining"><strong>当時の残り・限界</strong> 主用途と卒論の範囲は相談前。品質基準は暫定で、形状特徴の継続条件を満たす候補は0件。写真RGBの分類効果、未使用建物での最終評価、Jevの実データ接続は未確認です。</p>
+<div class="log-entry-foot"><div class="log-links"><a href="#seminar-brief">ゼミ報告と相談事項 →</a></div><span>記録追加：2026-10-21</span></div></article>
+</div></details>
 <details class="log-day" id="log-day-2026-10-19"><summary><time datetime="2026-10-19">2026.10.19</time><span>14件<span class="log-day-categories">予備実験・マスタ整備・文献・資料・評価設計</span></span><span class="log-toggle" aria-hidden="true"></span></summary><div class="log-entries">
 <article class="log-entry" id="log-20261019-photo-rgb-alignment"><span class="log-category">予備実験</span><h3>各2写真の対応点を取り直し、調整・検証を分けて補正前後を比較</h3><p>6写真72候補を事前分割し、未解決6候補を保持。調整32点だけで相似変換を求め、検証34点で前後を比較。検証RMSEは3写真で改善、2写真で悪化、1写真で実質横ばい。全体20.44→20.46px、最大57.74→75.44px。固定条件のRGB最終採用は全3建物0→0点。4図・写真別統計・段階数を保存し、473,021候補の元画素一致と未補正236,634件の再現を確認。</p><p class="log-remaining"><strong>当時の残り・限界</strong> 対応はAIの目視候補で独立測量真値ではない。5_CBは検証5点で不足、反復アーチ・上部窓頂点等も独立確認が必要。1_SCは1視点だけ、3_SSは同じ点IDの2視点が残らない。次は確かな分散対応と同じ部材面の共通可視範囲を確保し、新しい検証点で補正モデルを評価。除外条件の見直しは別実験とする。元ラベル・13特徴・分類器は維持し再学習は未実施。</p>
 <div class="log-entry-foot"><div class="log-links"><a href="#photo-rgb-alignment">位置補正・RGB比較の4図 →</a><a href="evidence/record-27.html">数値・条件・次の改善案 →</a></div><span>記録追加：2026-10-19</span></div></article>
